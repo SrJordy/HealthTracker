@@ -4,21 +4,9 @@ import {
  Text,
  StyleSheet,
  TextInput,
- TouchableOpacity,
- KeyboardAvoidingView, Alert
+ TouchableOpacity, Alert
 } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-
-type RootStackParamList = {
-  Login: undefined;
-  Home: undefined;
-};
-
-type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
-
-type Props = {
-  navigation: LoginScreenNavigationProp;
-};
+import { Props } from './Components/NavigationStyle';
 
 
 const Login: React.FC<Props> = ({ navigation }) => {
@@ -46,7 +34,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
 };
 
  return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
@@ -67,7 +55,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Iniciar sesión</Text>
       </TouchableOpacity>
-    </KeyboardAvoidingView>
+    </View>
  );
 };
 
