@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
  View,
@@ -7,19 +8,7 @@ import {
  TouchableOpacity,
  KeyboardAvoidingView, Alert
 } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-
-type RootStackParamList = {
-  Login: undefined;
-  Home: undefined;
-};
-
-type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
-
-type Props = {
-  navigation: LoginScreenNavigationProp;
-};
-
+import { Props} from './Components/NavigationTypes'; // Ajusta la ruta si es necesario
 
 const Login: React.FC<Props> = ({ navigation }) => {
  const [email, setEmail] = useState('');
