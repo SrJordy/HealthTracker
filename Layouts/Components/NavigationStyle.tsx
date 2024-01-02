@@ -7,6 +7,6 @@ type RootStackParamList = {
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
-type Props = {
+export type Props = {
   navigation: LoginScreenNavigationProp;
 };
