@@ -1,11 +1,9 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-// Importa las pantallas que usarás en tu barra de navegación
-import HomeScreen from './HomeScreen';
-import DashboardScreen from './DashboardScreen';
-// Puedes agregar más pantallas según sea necesario
+import HomeScreen from './HomeScreen'; // Tu pantalla de inicio
+import DashboardScreen from './DashboardScreen'; // Tu pantalla de dashboard
 
 const Tab = createBottomTabNavigator();
 
@@ -13,24 +11,42 @@ const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        
+        tabBarIcon: ({ color }) => {
           let iconName;
 
           if (route.name === 'Home') {
-            iconName = focused ? 'ios-home' : 'ios-home-outline';
-          } else if (route.name === 'DashboardScreen') {
-            iconName = focused ? 'ios-settings' : 'ios-settings-outline';
+            iconName = 'House';
+          } else if (route.name === 'Dashboard') {
+            iconName = 'dashboard';
           }
-          // Puedes agregar más iconos para otras pantallas si es necesario
-
-          return <Icon name={iconName} size={size} color={color} />;
+          // Retorna el icono de MaterialIcons
+          return <Icon name={iconName} size={26} color={color} />;
         },
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="DashboardScreen" component={DashboardScreen} />
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerShown:false,
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{
+          headerShown:false,
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="dashboard" size={size} color={color} />
+          ),
+        }}
+      />
       {/* Agrega más Tab.Screen aquí para otras pantallas */}
     </Tab.Navigator>
   );
