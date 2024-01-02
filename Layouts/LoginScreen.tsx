@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
  View,
@@ -8,23 +7,43 @@ import {
  TouchableOpacity,
  KeyboardAvoidingView, Alert
 } from 'react-native';
-import { Props} from './Components/NavigationTypes'; // Ajusta la ruta si es necesario
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+};
+
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+
+type Props = {
+  navigation: LoginScreenNavigationProp;
+};
+
 
 const Login: React.FC<Props> = ({ navigation }) => {
  const [email, setEmail] = useState('');
  const [password, setPassword] = useState('');
  const [user, setUser] = useState({ isLoggedIn: false });
+ const [secureTextEntry, setSecureTextEntry] = useState(true);
 
+ 
  const handleLogin = () => {
-   if (email === 'Admin' && password === 'admin') {
-      navigation.navigate('Home');
-      setUser({ isLoggedIn: true });
-    
-   } else {
-    
-     Alert.alert('Error', 'Usuario o contraseña incorrectos');
-   }
+  if (email === '' || password === '') {
+    Alert.alert('Error', 'Por favor llene todos los campos');
+  } else if (email === 'Admin' && password === 'admin') {
+     setUser({ isLoggedIn: true });
+     navigation.navigate('Home');
+     Alert.alert('Éxito', 'Iniciaste sesión correctamente');
+   
+  } else {
+    Alert.alert('Error', 'Usuario o contraseña incorrectos');
+  }
  };
+
+ const toggleSecureTextEntry = () => {
+  setSecureTextEntry(!secureTextEntry);
+};
 
  return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -40,8 +59,11 @@ const Login: React.FC<Props> = ({ navigation }) => {
         placeholder="Contraseña"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
+        secureTextEntry={secureTextEntry}
       />
+      <TouchableOpacity style={styles.buttonPass} onPress={toggleSecureTextEntry}>
+        <Text style={styles.buttonText}>Mostrar/Ocultar contraseña</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Iniciar sesión</Text>
       </TouchableOpacity>
@@ -73,11 +95,18 @@ const styles = StyleSheet.create({
      color:'black' // Bordes redondeados para los campos de texto
    },
    button: {
-     backgroundColor: '#2BDCFF', // Segundo Color (Más Suave)
-     padding: 10,
-     width: '80%',
-     borderRadius: 5, // Bordes redondeados para el botón
-   },
+    backgroundColor: '#2BDCFF', // Segundo Color (Más Suave)
+    padding: 10,
+    width: '80%',
+    borderRadius: 5, // Bordes redondeados para el botón
+  },
+  buttonPass: {
+    backgroundColor: '#2BDCFF', // Segundo Color (Más Suave)
+    padding: 10,
+    width: '50%',
+    marginBottom:10,
+    borderRadius: 5, // Bordes redondeados para el botón
+  },
    buttonText: {
      color: 'white',
      fontSize: 18,
