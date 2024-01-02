@@ -21,7 +21,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
     Alert.alert('Error', 'Por favor llene todos los campos');
   } else if (email === 'Admin' && password === 'admin') {
      setUser({ isLoggedIn: true });
-     navigation.navigate('Home');
+     navigation.navigate('Main');
      Alert.alert('Éxito', 'Iniciaste sesión correctamente');
    
   } else {
