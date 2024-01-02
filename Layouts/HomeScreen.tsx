@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { View, Text, Button, Alert, BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import { useAuth } from './AuthContext';
 const HomeScreen = () => {
-    
+  const { userID, setUserID } = useAuth();
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -20,6 +20,7 @@ const HomeScreen = () => {
           {
             text: 'Cerrar Sesión',
             onPress: () => {
+              setUserID(null); 
               // Si el usuario confirma, navega de regreso a la pantalla de inicio de sesión
               navigation.navigate('Login');
             },
@@ -38,11 +39,13 @@ const HomeScreen = () => {
       backHandler.remove();
     };
   }, [navigation]);
+  
 
   return (
     <View>
       <Text style={{color:'black'}}>¡Bienvenido a la pantalla de inicio!</Text>
-    
+      <Text style={{ color: 'black' }}>Tu userID: {userID}</Text>
+      
     </View>
   );
 };

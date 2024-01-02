@@ -7,7 +7,7 @@ import {
  TouchableOpacity, Alert
 } from 'react-native';
 import { Props } from './Components/NavigationStyle';
-
+import { useAuth } from './AuthContext';
 
 const Login: React.FC<Props> = ({ navigation }) => {
  const [email, setEmail] = useState('');
@@ -15,12 +15,13 @@ const Login: React.FC<Props> = ({ navigation }) => {
  const [user, setUser] = useState({ isLoggedIn: false });
  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
- 
+ const { setUserID } = useAuth();
  const handleLogin = () => {
   if (email === '' || password === '') {
     Alert.alert('Error', 'Por favor llene todos los campos');
   } else if (email === 'Admin' && password === 'admin') {
      setUser({ isLoggedIn: true });
+     setUserID(1); 
      navigation.navigate('Main');
      Alert.alert('Éxito', 'Iniciaste sesión correctamente');
    
