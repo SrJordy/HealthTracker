@@ -20,7 +20,6 @@ const BottomTabNavigator = () => {
           } else if (route.name === 'Dashboard') {
             iconName = 'dashboard';
           }
-          // Retorna el icono de MaterialIcons
           return <Icon name={iconName} size={26} color={color} />;
         },
         tabBarActiveTintColor: 'tomato',
