@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { View, Text, Button, Alert, BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from './AuthContext';
+import { Image } from 'react-native';
+import { StyleSheet } from 'react-native';
 const HomeScreen = () => {
   const { userID, setUserID } = useAuth();
   const navigation = useNavigation();
@@ -42,12 +44,61 @@ const HomeScreen = () => {
   
 
   return (
-    <View>
-      <Text style={{color:'black'}}>¡Bienvenido a la pantalla de inicio!</Text>
-      <Text style={{ color: 'black' }}>Tu userID: {userID}</Text>
-      
+    <View style={styles.container}>
+      <View style={styles.header}>
+        
+        <Image source={require('./src/IconoRedondo.png')} style={styles.profilePic} />
+        <Text style={styles.welcomeText}>¡Bienvenido a su espacio de salud!</Text>
+      </View>
+
+      <View style={styles.userInfoSection}>
+        <Text style={styles.userInfoText}>Información del Paciente:</Text>
+        <Text style={styles.userInfoText}>UserID: {userID}</Text>
+        {/* Aquí puedes añadir más información del paciente */}
+      </View>
+
+      {/* Aquí puedes añadir más secciones de información */}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f4f7f5',
+    padding: 20,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  profilePic: {
+    width: 100,
+    height: 100,
+    borderRadius: 50, // Hace la imagen redonda
+    marginBottom: 10,
+  },
+  welcomeText: {
+    fontSize: 22,
+    color: '#3e3d42',
+    fontWeight: 'bold',
+  },
+  userInfoSection: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  userInfoText: {
+    fontSize: 18,
+    color: '#3e3d42',
+    marginBottom: 10,
+  },
+});
 
 export default HomeScreen;
