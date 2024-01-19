@@ -10,6 +10,8 @@ const Login: React.FC<Props> = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const logoImage = require('./src/IconoRedondo.png'); // Asegúrate de que la ruta a la imagen sea correcta
   const { setUserID } = useAuth();
+  const close_eye = require('./src/icons/closed_eye_icon_259685.png');
+  const open_eye=require('./src/icons/eye_icon_259684.png');
 
   const handleLogin = () => {
     if (email === '' || password === '') {
@@ -19,6 +21,8 @@ const Login: React.FC<Props> = ({ navigation }) => {
       setUserID(1); 
       navigation.navigate('Main');
       Alert.alert('Éxito', 'Iniciaste sesión correctamente');
+      setEmail('');
+      setPassword('');
     } else {
       Alert.alert('Error', 'Usuario o contraseña incorrectos');
     }
@@ -57,7 +61,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
           onChangeText={setPassword}
         />
         <TouchableOpacity style={styles.icon} onPress={toggleSecureTextEntry}>
-          <Icon name={secureTextEntry ? "eye-slash" : "eye"} size={24} color="black" />
+          <Image source={secureTextEntry ? close_eye : open_eye} style={{ width: 30, height: 30 }} />
         </TouchableOpacity>
       </View>
 
