@@ -1,12 +1,74 @@
-import React, { useEffect } from 'react';
-import { View, Text, Button, Alert, BackHandler } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+const ritmo_cardiaco = require('./src/icons/hearth.png');
+const temperatura = require('./src/icons/temperature.png');
 const DashboardScreen = () => {
+  // Funciones para manejar el clic en las tarjetas
+  const handleRitmoCardiacoPress = () => {
+    console.log('Ritmo Cardiaco pressed');
+    // Aquí puedes agregar más lógica
+  };
+
+  const handleTemperaturaPress = () => {
+    console.log('Temperatura pressed');
+    // Aquí puedes agregar más lógica
+  };
 
   return (
-    <View>
-      <Text style={{color:'black'}}>¡Bienvenido a la Das de inicio!</Text>
+    <View style={styles.container}>
+      {/* Tarjeta Ritmo Cardiaco */}
+      <TouchableOpacity style={styles.card} onPress={handleRitmoCardiacoPress}>
+        <Text style={styles.cardTitle}>Ritmo Cardíaco</Text>
+        <Image source={ritmo_cardiaco} style={styles.cardImage} />
+        <Text style={styles.cardContent}>75 bpm</Text>
+      </TouchableOpacity>
+
+      {/* Tarjeta Temperatura */}
+      <TouchableOpacity style={styles.card} onPress={handleTemperaturaPress}>
+        <Text style={styles.cardTitle}>Temperatura</Text>
+        <Image source={temperatura} style={styles.cardImage} />
+        <Text style={styles.cardContent}>36.6°C</Text>
+      </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  card: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+    padding: 20,
+    marginVertical: 10,
+    width: '90%',
+  },
+  cardTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color:'black'
+  },
+  cardImage: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+  },
+  cardContent: {
+    fontSize: 18,
+    color:'black'
+  },
+});
 
 export default DashboardScreen;
