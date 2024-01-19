@@ -5,11 +5,11 @@ import HomeScreen from './HomeScreen'; // Tu pantalla de inicio
 import DashboardScreen from './DashboardScreen'; // Tu pantalla de dashboard
 
 import { Image } from 'react-native';
-
+import CalendarScreen from './CalendarScreen';
 const Tab = createBottomTabNavigator();
 const Profile = require('./src/icons/user_person_profile_account_icon_259562.png');
 const dashboardicon=require('./src/icons/analytic_dashboard_home_manage_user_interface_icon_123286.png');
-
+const Calendario=require('./src/icons/calendar.png')
 const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
@@ -22,6 +22,8 @@ const BottomTabNavigator = () => {
             icon=<Image source={Profile} style={{ width: 35, height: 35, tintColor: color }} />;
           } else if (route.name === 'Datos') {
             icon = <Image source={dashboardicon} style={{ width: 30, height: 30, tintColor: color }} />;
+          } else if (route.name=='Calendario'){
+            icon = <Image source={Calendario} style={{ width: 30, height: 30, tintColor: color }} />;
           }
           return icon;
         },
@@ -39,6 +41,13 @@ const BottomTabNavigator = () => {
       <Tab.Screen
         name="Datos"
         component={DashboardScreen}
+        options={{
+          headerShown:false
+        }}
+      />
+      <Tab.Screen
+        name="Calendario"
+        component={CalendarScreen}
         options={{
           headerShown:false
         }}
