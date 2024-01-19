@@ -1,11 +1,13 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import HomeScreen from './HomeScreen'; // Tu pantalla de inicio
 import DashboardScreen from './DashboardScreen'; // Tu pantalla de dashboard
+import { Image } from 'react-native';
 
 const Tab = createBottomTabNavigator();
+const Profile = require('./src/icons/user_person_profile_account_icon_259562.png');
+const dashboardicon=require('./src/icons/analytic_dashboard_home_manage_user_interface_icon_123286.png');
 
 const BottomTabNavigator = () => {
   return (
@@ -13,37 +15,31 @@ const BottomTabNavigator = () => {
       screenOptions={({ route }) => ({
         
         tabBarIcon: ({ color }) => {
-          let iconName;
+          let icon;
 
-          if (route.name === 'Home') {
-            iconName = 'House';
-          } else if (route.name === 'Dashboard') {
-            iconName = 'dashboard';
+          if (route.name === 'Perfil') {
+            icon=<Image source={Profile} style={{ width: 35, height: 35, tintColor: color }} />;
+          } else if (route.name === 'Datos') {
+            icon = <Image source={dashboardicon} style={{ width: 30, height: 30, tintColor: color }} />;
           }
-          return <Icon name={iconName} size={26} color={color} />;
+          return icon;
         },
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
       })}
     >
       <Tab.Screen
-        name="Home"
+        name="Perfil"
         component={HomeScreen}
         options={{
           headerShown:false,
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home" size={size} color={color} />
-          ),
         }}
       />
       <Tab.Screen
-        name="Dashboard"
+        name="Datos"
         component={DashboardScreen}
         options={{
-          headerShown:false,
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="dashboard" size={size} color={color} />
-          ),
+          headerShown:false
         }}
       />
       {/* Agrega más Tab.Screen aquí para otras pantallas */}
