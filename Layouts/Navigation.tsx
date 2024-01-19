@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './HomeScreen'; // Tu pantalla de inicio
 import DashboardScreen from './DashboardScreen'; // Tu pantalla de dashboard
+
 import { Image } from 'react-native';
 
 const Tab = createBottomTabNavigator();
