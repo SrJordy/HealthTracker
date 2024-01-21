@@ -1,0 +1,7 @@
+Cosas por hacer 
+- hacer el calendario funcional
+- hacer lo de las alarmas
+- hacer lo de las notificaciones
+- hacer una interfaz mas bonita para obtener mas informacion de la temperatura
+- hacer una interfaz para los cuidadores (toca ver lo de las notificaciones por caidas)
+- hacer las validaciones de los campos a rellenar
