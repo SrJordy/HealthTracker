@@ -52,6 +52,7 @@ const BottomTabNavigator = () => {
           headerShown:false
         }}
       />
+      
       {/* Agrega más Tab.Screen aquí para otras pantallas */}
     </Tab.Navigator>
   );
