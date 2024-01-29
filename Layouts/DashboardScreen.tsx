@@ -1,7 +1,9 @@
 import React from 'react';
+import LottieView from 'lottie-react-native';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-const ritmo_cardiaco = require('./src/icons/hearth.png');
-const temperatura = require('./src/icons/temperature.png');
+const temperatura = require('./src/temperature.json');
+const ritmoCardiacoAnimation = require('./src/healthanimation.json'); // Cambia esto por la ruta de tu archivo Lottie
+
 const DashboardScreen = () => {
   // Funciones para manejar el clic en las tarjetas
   const handleRitmoCardiacoPress = () => {
@@ -19,14 +21,14 @@ const DashboardScreen = () => {
       {/* Tarjeta Ritmo Cardiaco */}
       <TouchableOpacity style={styles.card} onPress={handleRitmoCardiacoPress}>
         <Text style={styles.cardTitle}>Ritmo Cardíaco</Text>
-        <Image source={ritmo_cardiaco} style={styles.cardImage} />
+        <LottieView source={ritmoCardiacoAnimation} style={styles.lottieAnimation} autoPlay loop />
         <Text style={styles.cardContent}>75 bpm</Text>
       </TouchableOpacity>
 
       {/* Tarjeta Temperatura */}
       <TouchableOpacity style={styles.card} onPress={handleTemperaturaPress}>
         <Text style={styles.cardTitle}>Temperatura</Text>
-        <Image source={temperatura} style={styles.cardImage} />
+        <LottieView source={temperatura} style={styles.lottieAnimation} autoPlay loop />
         <Text style={styles.cardContent}>36.6°C</Text>
       </TouchableOpacity>
     </View>
@@ -68,6 +70,11 @@ const styles = StyleSheet.create({
   cardContent: {
     fontSize: 18,
     color:'black'
+  },
+  lottieAnimation: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
   },
 });
 
