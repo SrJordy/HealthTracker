@@ -7,7 +7,9 @@ import { StyleSheet } from 'react-native';
 const HomeScreen = () => {
   const { userID, setUserID } = useAuth();
   const navigation = useNavigation();
-
+  const userInfoText = userID === 1 ? 'Información del Paciente' : 
+  userID === 2 ? 'Información del Cuidador' : 
+  'Información del Usuario';
   useEffect(() => {
     const backAction = () => {
       // Mostrar la ventana de confirmación al presionar el botón de retroceso físico
@@ -52,9 +54,9 @@ const HomeScreen = () => {
       </View>
 
       <View style={styles.userInfoSection}>
-        <Text style={styles.userInfoText}>Información del Paciente:</Text>
+        <Text style={styles.userInfoText}>{userInfoText}:</Text>
         <Text style={styles.userInfoText}>UserID: {userID}</Text>
-        {/* Aquí puedes añadir más información del paciente */}
+        {/* Aquí puedes añadir más información del usuario */}
       </View>
 
       {/* Aquí puedes añadir más secciones de información */}
