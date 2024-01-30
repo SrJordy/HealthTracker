@@ -84,7 +84,7 @@ const TemperatureDashboard = ({ temperaturaProp }) => {
                 <LottieView source={lottieSource} autoPlay loop style={styles.lottieLogo} />
             </View>
 
-            <Text style={styles.temperature}>Temperatura Corporal: {temperatura.toFixed(1)}°C</Text>
+            <Text style={styles.temperature}>Temperatura: {temperatura.toFixed(1)}°C</Text>
 
             <Text style={[styles.status, { color: estadoColor[estado] }]}>Estado: {estado}</Text>
 
@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginVertical: 20,
         color: 'black',
+        textAlign:'center'
     },
     status: {
         fontSize: 24,
