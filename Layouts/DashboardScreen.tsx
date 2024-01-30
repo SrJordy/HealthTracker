@@ -5,7 +5,7 @@ const temperatura = require('./src/temperature.json');
 const ritmoCardiacoAnimation = require('./src/healthanimation.json'); // Cambia esto por la ruta de tu archivo Lottie
 
 const DashboardScreen = ({navigation }) => {
-  // Funciones para manejar el clic en las tarjetas
+
   const handleRitmoCardiacoPress = () => {
     console.log('Ritmo Cardiaco pressed');
     navigation.navigate('RitmoCardiaco');
@@ -13,7 +13,7 @@ const DashboardScreen = ({navigation }) => {
 
   const handleTemperaturaPress = () => {
     console.log('Temperatura pressed');
-    // Aquí puedes agregar más lógica
+    navigation.navigate('Temperatura');
   };
 
   return (
