@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 const DashboardHealthcare = ({ ritmoCardiacoProp }) => {
     const lottieSource = require('./src/healthanimation.json');
     const navigation = useNavigation();
-    const ritmoCardiaco = ritmoCardiacoProp || 65; // Usar prop o valor predeterminado
+    const ritmoCardiaco = ritmoCardiacoProp || 85; // Usar prop o valor predeterminado
 
     const estadoColor = {
         normal: '#2ecc71',
@@ -20,7 +20,7 @@ const DashboardHealthcare = ({ ritmoCardiacoProp }) => {
         estado = 'bradicardia';
     } else if (ritmoCardiaco > 100) {
         estado = 'taquicardia';
-    } else if (ritmoCardiaco >= 60 && ritmoCardiaco <= 100) {
+    } else if (ritmoCardiaco >= 60 && ritmoCardiaco <= 99) {
         estado = 'normal';
     }
 

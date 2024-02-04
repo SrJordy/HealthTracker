@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 const TemperatureDashboard = ({ temperaturaProp }) => {
     const lottieSource = require('./src/temperature.json');
     const navigation = useNavigation();
-    const temperatura = temperaturaProp || 37.0; // Usar prop o valor predeterminado
+    const temperatura = temperaturaProp || 30; // Usar prop o valor predeterminado
 
     const estadoColor = {
         normal: '#2ecc71',
