@@ -140,12 +140,12 @@ const CalendarScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#eefffc',
   },
   customModalView: {
     position: 'absolute',
     top: '5%',
-    backgroundColor: 'white',
+    backgroundColor: '#fff2ed',
     borderRadius: 20,
     padding: 20,
     margin:10,
@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     borderWidth:1,
+    borderColor: '#450508',
     elevation: 5,
     zIndex: 10,
   },
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 6,
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#00c3bd',
     borderRadius: 10,
     padding: 10,
     marginTop: 10,
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
   deleteButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#ff4122',
     marginTop: 10,
   },
   buttonText: {
@@ -255,7 +256,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 30,
     bottom: 30,
-    backgroundColor: '#007bff',
+    backgroundColor: '#00c3bd',
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -267,7 +268,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 24,
   },
-  
 });
+
 
 export default CalendarScreen;
