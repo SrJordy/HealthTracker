@@ -6,13 +6,15 @@ import DashboardScreen from './DashboardScreen'; // Tu pantalla de dashboard
 
 import { useAuth } from './AuthContext';
 import CuidadorDashboard from './PatientList';
-
+import MedicationReminderScreen from './MedicationScreen';
 import { Image } from 'react-native';
 import CalendarScreen from './CalendarScreen';
 const Tab = createBottomTabNavigator();
 const Profile = require('./src/icons/user_person_profile_account_icon_259562.png');
 const dashboardicon=require('./src/icons/analytic_dashboard_home_manage_user_interface_icon_123286.png');
 const Calendario=require('./src/icons/calendar.png')
+const medicamento=require('./src/icons/medication.png')
+
 const BottomTabNavigator = () => {
   const { userID, setUserID } = useAuth();
   return (
@@ -30,6 +32,8 @@ const BottomTabNavigator = () => {
             icon = <Image source={Calendario} style={{ width: 30, height: 30, tintColor: color }} />;
           }else if (route.name=='Lista'){
             icon = <Image source={Calendario} style={{ width: 30, height: 30, tintColor: color }} />;
+          }else if (route.name=='Medicamento'){
+            icon = <Image source={medicamento} style={{ width: 30, height: 30, tintColor: color }} />;
           }
           return icon;
         },
@@ -72,7 +76,13 @@ const BottomTabNavigator = () => {
           />
         </>
       )}
-      
+      <Tab.Screen
+        name="Medicamento"
+        component={MedicationReminderScreen}
+        options={{
+          headerShown:false,
+        }}
+      />
       {/* Agrega más Tab.Screen aquí para otras pantallas */}
     </Tab.Navigator>
   );
