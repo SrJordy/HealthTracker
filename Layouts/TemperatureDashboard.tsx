@@ -4,23 +4,23 @@ import LottieView from 'lottie-react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { useNavigation } from '@react-navigation/native';
 
-const DashboardHealthcare = ({ ritmoCardiacoProp }) => {
-    const lottieSource = require('./src/healthanimation.json');
+const TemperatureDashboard = ({ temperaturaProp }) => {
+    const lottieSource = require('./src/temperature.json');
     const navigation = useNavigation();
-    const ritmoCardiaco = ritmoCardiacoProp || 85; // Usar prop o valor predeterminado
+    const temperatura = temperaturaProp || 30; // Usar prop o valor predeterminado
 
     const estadoColor = {
         normal: '#2ecc71',
-        bradicardia: '#3498db',
-        taquicardia: '#e74c3c',
+        fiebre: '#e74c3c',
+        hipotermia: '#3498db',
     };
 
     let estado = 'normal';
-    if (ritmoCardiaco < 60) {
-        estado = 'bradicardia';
-    } else if (ritmoCardiaco > 100) {
-        estado = 'taquicardia';
-    } else if (ritmoCardiaco >= 60 && ritmoCardiaco <= 99) {
+    if (temperatura < 36.0) {
+        estado = 'hipotermia';
+    } else if (temperatura > 37.5) {
+        estado = 'fiebre';
+    } else if (temperatura >= 36.0 && temperatura <= 37.5) {
         estado = 'normal';
     }
 
@@ -34,13 +34,13 @@ const DashboardHealthcare = ({ ritmoCardiacoProp }) => {
     // Ajustar el ancho del gráfico en función del número de etiquetas
     const chartWidth = Math.max(700, dataLabels.length * 60);
 
-    const [dataValues, setDataValues] = useState(Array.from({ length: 60 }, () => Math.floor(Math.random() * 40) + 60));
+    const [dataValues, setDataValues] = useState(Array.from({ length: 60 }, () => Math.random() * 2 + 35));
 
     useEffect(() => {
         const interval = setInterval(() => {
             // Actualiza dataValues cada minuto
             setDataValues(prevData => {
-                const newValue = Math.floor(Math.random() * 40) + 60;
+                const newValue = Math.random() * 2 + 35;
                 const newData = [...prevData.slice(1), newValue];
                 return newData;
             });
@@ -53,7 +53,7 @@ const DashboardHealthcare = ({ ritmoCardiacoProp }) => {
         labels: dataLabels,
         datasets: [
             {
-                data: dataValues.map(value => Math.round(value)), // Redondear a números enteros
+                data: dataValues.map(value => value.toFixed(1)), // Redondear a un decimal
                 color: (opacity = 1) => estadoColor[estado],
                 strokeWidth: 2,
             },
@@ -84,7 +84,7 @@ const DashboardHealthcare = ({ ritmoCardiacoProp }) => {
                 <LottieView source={lottieSource} autoPlay loop style={styles.lottieLogo} />
             </View>
 
-            <Text style={styles.heartRate}>Ritmo Cardíaco: {ritmoCardiaco} bpm</Text>
+            <Text style={styles.temperature}>Temperatura: {temperatura.toFixed(1)}°C</Text>
 
             <Text style={[styles.status, { color: estadoColor[estado] }]}>Estado: {estado}</Text>
 
@@ -94,7 +94,7 @@ const DashboardHealthcare = ({ ritmoCardiacoProp }) => {
                     width={chartWidth}
                     height={300}
                     chartConfig={chartConfig}
-                    yAxisSuffix=" bpm"
+                    yAxisSuffix="°C"
                     bezier
                 />
             </ScrollView>
@@ -130,11 +130,12 @@ const styles = StyleSheet.create({
         width: 150,
         height: 150,
     },
-    heartRate: {
+    temperature: {
         fontSize: 25,
         fontWeight: 'bold',
         marginVertical: 20,
         color: 'black',
+        textAlign:'center'
     },
     status: {
         fontSize: 24,
@@ -146,4 +147,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default DashboardHealthcare;
+export default TemperatureDashboard;

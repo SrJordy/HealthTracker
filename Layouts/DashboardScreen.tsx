@@ -4,16 +4,16 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 const temperatura = require('./src/temperature.json');
 const ritmoCardiacoAnimation = require('./src/healthanimation.json'); // Cambia esto por la ruta de tu archivo Lottie
 
-const DashboardScreen = () => {
-  // Funciones para manejar el clic en las tarjetas
+const DashboardScreen = ({navigation }) => {
+
   const handleRitmoCardiacoPress = () => {
     console.log('Ritmo Cardiaco pressed');
-    // Aquí puedes agregar más lógica
+    navigation.navigate('RitmoCardiaco');
   };
 
   const handleTemperaturaPress = () => {
     console.log('Temperatura pressed');
-    // Aquí puedes agregar más lógica
+    navigation.navigate('Temperatura');
   };
 
   return (

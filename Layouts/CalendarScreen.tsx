@@ -1,22 +1,43 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CalendarScreen = () => {
   const [showEventCreator, setShowEventCreator] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [events, setEvents] = useState({});
-  const [currentEvent, setCurrentEvent] = useState({ date: '', title: '', subject: '', hour: '', minutes: '' });
+  const [currentEvent, setCurrentEvent] = useState({ date: '', title: '', subject: '', time: new Date() });
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const onDayPress = (day) => {
     setSelectedDate(day.dateString);
     setShowEventCreator(false);
+    setCurrentEvent({ ...currentEvent, date: day.dateString });
   };
 
   const openEventCreator = () => {
-    setCurrentEvent({ date: selectedDate, title: '', subject: '', hour: '', minutes: '' });
+    setCurrentEvent({ date: selectedDate, title: '', subject: '', time: new Date() });
     setShowEventCreator(true);
   };
+
+  const onChangeTime = (event, selectedTime) => {
+    setShowTimePicker(false);
+    if (selectedTime) {
+      const hours = selectedTime.getHours();
+      const minutes = selectedTime.getMinutes();
+      const period = hours >= 12 ? "PM" : "AM";
+      
+      setCurrentEvent({
+        ...currentEvent,
+        time: selectedTime,
+        hour: hours,
+        minutes: minutes,
+        period: period, // Aquí almacenamos "AM" o "PM"
+      });
+    }
+  };
+  
 
   const handleSaveEvent = () => {
     if (!currentEvent.title || !currentEvent.subject || !currentEvent.hour || !currentEvent.minutes) {
@@ -36,7 +57,7 @@ const CalendarScreen = () => {
   };
 
   const handleCancelEvent = () => {
-    setCurrentEvent({ date: '', title: '', subject: '', hour: '', minutes: '' });
+    setCurrentEvent({ date: '', title: '', subject: '', time: new Date() });
     setShowEventCreator(false);
   };
 
@@ -52,6 +73,8 @@ const CalendarScreen = () => {
 
       {showEventCreator && (
         <View style={styles.customModalView}>
+          <Text style={styles.modalTitle}>Fecha</Text>
+          <Text style={styles.dateText}>{currentEvent.date}</Text>
           <Text style={styles.modalTitle}>Título del Evento</Text>
           <TextInput
             style={styles.input}
@@ -69,25 +92,20 @@ const CalendarScreen = () => {
             onChangeText={(text) => setCurrentEvent({ ...currentEvent, subject: text })}
           />
           <Text style={styles.modalTitle}>Hora</Text>
-          <View style={styles.timeContainer}>
-            <TextInput
-              style={[styles.input, styles.timeInput]}
-              placeholder="HH"
-              keyboardType="numeric"
-              maxLength={2}
-              value={currentEvent.hour}
-              onChangeText={(text) => setCurrentEvent({ ...currentEvent, hour: text.replace(/[^0-9]/g, '') })}
+          <TouchableOpacity style={[styles.input, styles.timeInput]} onPress={() => setShowTimePicker(true)}>
+          <Text style={styles.Timeitem}>
+            {currentEvent.hour ? `${currentEvent.hour}:${currentEvent.minutes} ${currentEvent.period}`:''}
+          </Text>
+          </TouchableOpacity>
+          {showTimePicker && (
+            <DateTimePicker
+              value={currentEvent.time}
+              mode="time"
+              is24Hour={true}
+              display="default"
+              onChange={onChangeTime}
             />
-            <Text style={styles.colon}>:</Text>
-            <TextInput
-              style={[styles.input, styles.timeInput]}
-              placeholder="MM"
-              keyboardType="numeric"
-              maxLength={2}
-              value={currentEvent.minutes}
-              onChangeText={(text) => setCurrentEvent({ ...currentEvent, minutes: text.replace(/[^0-9]/g, '') })}
-            />
-          </View>
+          )}
           <TouchableOpacity style={styles.button} onPress={handleSaveEvent}>
             <Text style={styles.buttonText}>Guardar</Text>
           </TouchableOpacity>
@@ -119,25 +137,26 @@ const CalendarScreen = () => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#eefffc',
   },
   customModalView: {
     position: 'absolute',
-    top: '20%',
-    left: '10%',
-    right: '10%',
-    backgroundColor: 'white',
+    top: '5%',
+    backgroundColor: '#fff2ed',
     borderRadius: 20,
     padding: 20,
+    margin:10,
+    width:'95%',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
+    borderWidth:1,
+    borderColor: '#450508',
     elevation: 5,
     zIndex: 10,
   },
@@ -148,12 +167,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  dateText: {
+    alignSelf: 'center',
+    marginVertical: 10,
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  Timeitem: {
+    alignSelf: 'center',
+    marginLeft: 12,
+    color: 'black',
+    fontSize: 20,
+  },
   input: {
-    height: 40,
+    height: 50,
     margin: 12,
     borderWidth: 1,
     padding: 10,
-    width: '80%',
+    width: '100%',
     borderRadius: 10,
     color: 'black',
   },
@@ -166,7 +198,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   timeInput: {
-    width: 50,
+    width: '60%',
+    alignItems:'center'
   },
   colon: {
     color: 'black',
@@ -174,7 +207,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 6,
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#00c3bd',
     borderRadius: 10,
     padding: 10,
     marginTop: 10,
@@ -185,7 +218,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
   deleteButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#ff4122',
     marginTop: 10,
   },
   buttonText: {
@@ -223,7 +256,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 30,
     bottom: 30,
-    backgroundColor: '#007bff',
+    backgroundColor: '#00c3bd',
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -236,5 +269,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
 });
+
 
 export default CalendarScreen;

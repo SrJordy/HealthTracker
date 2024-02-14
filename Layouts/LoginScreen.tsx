@@ -16,9 +16,14 @@ const Login: React.FC<Props> = ({ navigation }) => {
   const handleLogin = () => {
     if (email === '' || password === '') {
       Alert.alert('Error', 'Por favor llene todos los campos');
-    } else if (email === 'Admin' && password === 'admin') {
-      // Suponiendo que aquí estableces el estado de usuario
-      setUserID(1); 
+    } else if (email === 'paciente' && password === '1234') {
+      setUserID(1);
+      navigation.navigate('Main');
+      Alert.alert('Éxito', 'Iniciaste sesión correctamente');
+      setEmail('');
+      setPassword('');
+    } else if (email === 'cuidador' && password === '1234') {
+      setUserID(2);
       navigation.navigate('Main');
       Alert.alert('Éxito', 'Iniciaste sesión correctamente');
       setEmail('');
