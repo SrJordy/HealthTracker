@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 const TemperatureDashboard = ({ temperaturaProp }) => {
     const lottieSource = require('./src/temperature.json');
     const navigation = useNavigation();
-    const temperatura = temperaturaProp || 30; // Usar prop o valor predeterminado
+    const temperatura = temperaturaProp || 30;
 
     const estadoColor = {
         normal: '#2ecc71',
@@ -20,32 +20,21 @@ const TemperatureDashboard = ({ temperaturaProp }) => {
         estado = 'hipotermia';
     } else if (temperatura > 37.5) {
         estado = 'fiebre';
-    } else if (temperatura >= 36.0 && temperatura <= 37.5) {
-        estado = 'normal';
     }
 
     const handleBackButtonPress = () => {
         navigation.goBack();
     };
 
-    // Generar etiquetas para cada minuto de la última hora
     const dataLabels = Array.from({ length: 60 }, (_, i) => `Min ${i + 1}`);
-
-    // Ajustar el ancho del gráfico en función del número de etiquetas
     const chartWidth = Math.max(700, dataLabels.length * 60);
 
     const [dataValues, setDataValues] = useState(Array.from({ length: 60 }, () => Math.random() * 2 + 35));
 
     useEffect(() => {
         const interval = setInterval(() => {
-            // Actualiza dataValues cada minuto
-            setDataValues(prevData => {
-                const newValue = Math.random() * 2 + 35;
-                const newData = [...prevData.slice(1), newValue];
-                return newData;
-            });
-        }, 60000); // 60 segundos
-
+            setDataValues(prevData => [...prevData.slice(1), Math.random() * 2 + 35]);
+        }, 60000);
         return () => clearInterval(interval);
     }, []);
 
@@ -53,8 +42,8 @@ const TemperatureDashboard = ({ temperaturaProp }) => {
         labels: dataLabels,
         datasets: [
             {
-                data: dataValues.map(value => value.toFixed(1)), // Redondear a un decimal
-                color: (opacity = 1) => estadoColor[estado],
+                data: dataValues.map(value => value.toFixed(1)),
+                color: () => estadoColor[estado],
                 strokeWidth: 2,
             },
         ],
@@ -63,20 +52,17 @@ const TemperatureDashboard = ({ temperaturaProp }) => {
     const chartConfig = {
         backgroundGradientFrom: '#ffffff',
         backgroundGradientTo: '#ffffff',
-        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+        color: () => `rgba(0, 0, 0, 1)`,
         strokeWidth: 2,
         propsForLabels: {
-            fontSize: 10, // Ajustar según necesidad
+            fontSize: 10,
         },
     };
 
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.backButton} onPress={handleBackButtonPress}>
-                <Image
-                    source={require('./src/icons/return.png')}
-                    style={styles.backButtonImage}
-                />
+                <Image source={require('./src/icons/return.png')} style={styles.backButtonImage} />
                 <Text style={styles.backButtonText}>Retroceder</Text>
             </TouchableOpacity>
 
@@ -85,18 +71,10 @@ const TemperatureDashboard = ({ temperaturaProp }) => {
             </View>
 
             <Text style={styles.temperature}>Temperatura: {temperatura.toFixed(1)}°C</Text>
-
             <Text style={[styles.status, { color: estadoColor[estado] }]}>Estado: {estado}</Text>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <LineChart
-                    data={data}
-                    width={chartWidth}
-                    height={300}
-                    chartConfig={chartConfig}
-                    yAxisSuffix="°C"
-                    bezier
-                />
+                <LineChart data={data} width={chartWidth} height={300} chartConfig={chartConfig} yAxisSuffix="°C" bezier />
             </ScrollView>
         </View>
     );
@@ -108,21 +86,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
+        backgroundColor: '#eefffc',
     },
     backButton: {
         position: 'absolute',
         top: 40,
         left: 20,
-        zIndex: 1,
         flexDirection: 'row',
         alignItems: 'center',
     },
     backButtonText: {
         fontSize: 20,
-        color: 'black',
+        color: '#086567',
     },
     lottieContainer: {
-        marginTop: 60, // Aumenta el margen para evitar la superposición con el botón
+        marginTop: 60,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -134,16 +112,17 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: 'bold',
         marginVertical: 20,
-        color: 'black',
-        textAlign:'center'
+        color: '#ff5b37',
     },
     status: {
         fontSize: 24,
         marginBottom: 20,
+        color: '#ff5b37',
     },
     backButtonImage: {
         width: 30,
         height: 30,
+        marginRight: 8,
     },
 });
 

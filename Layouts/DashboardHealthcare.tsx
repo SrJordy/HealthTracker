@@ -16,67 +16,46 @@ const DashboardHealthcare = ({ ritmoCardiacoProp }) => {
     };
 
     let estado = 'normal';
-    if (ritmoCardiaco < 60) {
-        estado = 'bradicardia';
-    } else if (ritmoCardiaco > 100) {
-        estado = 'taquicardia';
-    } else if (ritmoCardiaco >= 60 && ritmoCardiaco <= 99) {
-        estado = 'normal';
-    }
+    if (ritmoCardiaco < 60) estado = 'bradicardia';
+    else if (ritmoCardiaco > 100) estado = 'taquicardia';
 
-    const handleBackButtonPress = () => {
-        navigation.goBack();
-    };
+    const handleBackButtonPress = () => navigation.goBack();
 
-    // Generar etiquetas para cada minuto de la última hora
     const dataLabels = Array.from({ length: 60 }, (_, i) => `Min ${i + 1}`);
-
-    // Ajustar el ancho del gráfico en función del número de etiquetas
     const chartWidth = Math.max(700, dataLabels.length * 60);
 
     const [dataValues, setDataValues] = useState(Array.from({ length: 60 }, () => Math.floor(Math.random() * 40) + 60));
 
     useEffect(() => {
         const interval = setInterval(() => {
-            // Actualiza dataValues cada minuto
-            setDataValues(prevData => {
-                const newValue = Math.floor(Math.random() * 40) + 60;
-                const newData = [...prevData.slice(1), newValue];
-                return newData;
-            });
-        }, 60000); // 60 segundos
-
+            setDataValues(prevData => [...prevData.slice(1), Math.floor(Math.random() * 40) + 60]);
+        }, 60000);
         return () => clearInterval(interval);
     }, []);
 
     const data = {
         labels: dataLabels,
-        datasets: [
-            {
-                data: dataValues.map(value => Math.round(value)), // Redondear a números enteros
-                color: (opacity = 1) => estadoColor[estado],
-                strokeWidth: 2,
-            },
-        ],
+        datasets: [{
+            data: dataValues.map(value => Math.round(value)),
+            color: () => estadoColor[estado],
+            strokeWidth: 2,
+        }],
     };
 
     const chartConfig = {
         backgroundGradientFrom: '#ffffff',
         backgroundGradientTo: '#ffffff',
-        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+        color: () => `rgba(0, 0, 0, 1)`,
         strokeWidth: 2,
         propsForLabels: {
-            fontSize: 10, // Ajustar según necesidad
+            fontSize: 10,
         },
     };
 
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.backButton} onPress={handleBackButtonPress}>
-                <Image
-                    source={require('./src/icons/return.png')}
-                    style={styles.backButtonImage}
-                />
+                <Image source={require('./src/icons/return.png')} style={styles.backButtonImage} />
                 <Text style={styles.backButtonText}>Retroceder</Text>
             </TouchableOpacity>
 
@@ -85,14 +64,13 @@ const DashboardHealthcare = ({ ritmoCardiacoProp }) => {
             </View>
 
             <Text style={styles.heartRate}>Ritmo Cardíaco: {ritmoCardiaco} bpm</Text>
-
             <Text style={[styles.status, { color: estadoColor[estado] }]}>Estado: {estado}</Text>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <LineChart
                     data={data}
                     width={chartWidth}
-                    height={300}
+                    height={220}
                     chartConfig={chartConfig}
                     yAxisSuffix=" bpm"
                     bezier
@@ -108,21 +86,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
+        backgroundColor: '#eefffc',
     },
     backButton: {
         position: 'absolute',
         top: 40,
         left: 20,
-        zIndex: 1,
         flexDirection: 'row',
         alignItems: 'center',
     },
     backButtonText: {
         fontSize: 20,
-        color: 'black',
+        color: '#086567',
     },
     lottieContainer: {
-        marginTop: 60, // Aumenta el margen para evitar la superposición con el botón
+        marginTop: 60,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -134,7 +112,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: 'bold',
         marginVertical: 20,
-        color: 'black',
+        color: '#ff5b37',
     },
     status: {
         fontSize: 24,
@@ -143,6 +121,7 @@ const styles = StyleSheet.create({
     backButtonImage: {
         width: 30,
         height: 30,
+        marginRight: 8,
     },
 });
 
