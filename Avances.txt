@@ -1,5 +1,0 @@
-Cosas por hacer 
-- hacer lo de las notificaciones
-- hacer una interfaz para los cuidadores (toca ver lo de las notificaciones por caidas)
-- hacer las validaciones de los campos a rellenar
-- mejorar la agenda para que tenga un mejor diseño y funcionalidad

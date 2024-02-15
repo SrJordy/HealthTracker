@@ -3,33 +3,39 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image } fro
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Props } from './Components/NavigationStyle';
 import { useAuth } from './AuthContext';
+import axios from 'axios';
 
 const Login: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const logoImage = require('./src/IconoRedondo.png'); // Asegúrate de que la ruta a la imagen sea correcta
-  const { setUserID } = useAuth();
+  const { setUser } = useAuth();
   const close_eye = require('./src/icons/closed_eye_icon_259685.png');
   const open_eye=require('./src/icons/eye_icon_259684.png');
 
-  const handleLogin = () => {
+  const API_URL = 'https://carinosaapi.onrender.com/api';
+
+  const handleLogin = async () => {
     if (email === '' || password === '') {
       Alert.alert('Error', 'Por favor llene todos los campos');
-    } else if (email === 'paciente' && password === '1234') {
-      setUserID(1);
-      navigation.navigate('Main');
-      Alert.alert('Éxito', 'Iniciaste sesión correctamente');
-      setEmail('');
-      setPassword('');
-    } else if (email === 'cuidador' && password === '1234') {
-      setUserID(2);
-      navigation.navigate('Main');
-      Alert.alert('Éxito', 'Iniciaste sesión correctamente');
-      setEmail('');
-      setPassword('');
     } else {
-      Alert.alert('Error', 'Usuario o contraseña incorrectos');
+      try {
+        console.log('Enviando datos de inicio de sesión:', { email, password });
+        const response = await axios.post(`${API_URL}/login`, { email, password });
+        console.log('Respuesta del servidor:', response.data);
+        if (response.data.user) {
+          setUser(response.data.user);
+          navigation.navigate('Main');
+          Alert.alert('Éxito', 'Iniciaste sesión correctamente');
+          setEmail('');
+          setPassword('');
+        } else {
+          Alert.alert('Error', 'Usuario o contraseña incorrectos');
+        }
+      } catch (error) {
+        Alert.alert('Error', 'Usuario o contraseña incorrectos');
+      }
     }
   };
 
@@ -82,7 +88,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#eefffc', // --java-50
+    backgroundColor: '#eefffc',
     padding: 20,
   },
   logo: {
@@ -92,7 +98,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    color: '#065d9e', // $curious-blue-700
+    color: '#065d9e',
     marginBottom: 16,
   },
   inputContainer: {
@@ -102,12 +108,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#ff5b37', // $pomegranate-400 para el borde
+    borderColor: '#ff5b37', 
     borderRadius: 12,
     paddingHorizontal: 16,
     alignItems: 'center',
-    elevation: 2, // Sombra para Android
-    shadowColor: '#ff5b37', // Sombra para iOS, usando pomegranate-400
+    elevation: 2, 
+    shadowColor: '#ff5b37', 
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -116,32 +122,32 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '100%',
     fontSize: 18,
-    color: '#086567', // --java-800 para el texto
+    color: '#086567', 
   },
   icon: {
     marginRight: 8,
-    color: '#3caef4', // $curious-blue-400 para íconos
+    color: '#3caef4', 
   },
   button: {
     width: '100%',
     height: 56,
-    backgroundColor: '#ff4122', // $pomegranate-500 para el botón
+    backgroundColor: '#ff4122',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 12,
     marginTop: 8,
     elevation: 3,
-    shadowColor: '#ff4122', // Sombra para iOS, usando pomegranate-500
+    shadowColor: '#ff4122',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
   buttonText: {
     fontSize: 20,
-    color: '#ffffff', // Texto blanco para contraste
+    color: '#ffffff', 
     fontWeight: 'bold',
   },
 });
 
     
-    export default Login;
+export default Login;

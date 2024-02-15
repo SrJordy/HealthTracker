@@ -17,7 +17,7 @@ const listapaciente=require('./src/icons/patientlist.png')
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
-  const { userID } = useAuth();
+  const { user } = useAuth();
 
   return (
     <Tab.Navigator
@@ -50,13 +50,13 @@ const BottomTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Perfil" component={HomeScreen} />
-      {userID === 1 && (
+      {user && user.roles === 'paciente' && (
         <>
           <Tab.Screen name="Datos" component={DashboardScreen} />
           <Tab.Screen name="Calendario" component={CalendarScreen} />
         </>
       )}
-      {userID === 2 && (
+      {user && user.roles === 'cuidador' && (
         <>
           <Tab.Screen name="Lista" component={CuidadorDashboard} />
           <Tab.Screen name="Calendario" component={CalendarScreen} />

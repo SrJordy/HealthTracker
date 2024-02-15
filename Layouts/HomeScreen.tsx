@@ -4,10 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from './AuthContext';
 
 const HomeScreen = () => {
-  const { userID, setUserID } = useAuth();
+  const { user, setUser } = useAuth();
   const navigation = useNavigation();
-
-  const userInfoText = userID === 1 ? 'Información del Paciente' : userID === 2 ? 'Información del Cuidador' : 'Información del Usuario';
+  console.log('datos de user:', user)
 
   useEffect(() => {
     const backAction = () => {
@@ -20,7 +19,7 @@ const HomeScreen = () => {
         {
           text: 'Cerrar Sesión',
           onPress: () => {
-            setUserID(null);
+            setUser(null);
             navigation.navigate('Login');
           },
         },
@@ -31,10 +30,10 @@ const HomeScreen = () => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
     return () => backHandler.remove();
-  }, [navigation, setUserID]);
+  }, [navigation, setUser]);
 
   const handleLogout = () => {
-    setUserID(null);
+    setUser(null);
     navigation.navigate('Login');
   };
 
@@ -46,8 +45,12 @@ const HomeScreen = () => {
       </View>
 
       <View style={styles.userInfoSection}>
-        <Text style={styles.userInfoText}>{userInfoText}:</Text>
-        <Text style={styles.userInfoText}>UserID: {userID}</Text>
+        <Text style={styles.userInfoText}>Usuario: {user ? user.firstname + ' ' + user.lastname : ''}</Text>
+        <Text style={styles.userInfoText}>Rol: {user ? user.roles : ''}</Text>
+        <Text style={styles.userInfoText}>Email: {user ? user.email : ''}</Text>
+        <Text style={styles.userInfoText}>Género: {user ? user.gender : ''}</Text>
+        <Text style={styles.userInfoText}>Fecha de nacimiento: {user ? user.birthdate : ''}</Text>
+        <Text style={styles.userInfoText}>Teléfono: {user ? user.phone : ''}</Text>
       </View>
 
       <TouchableOpacity style={styles.roundButton} onPress={handleLogout}>

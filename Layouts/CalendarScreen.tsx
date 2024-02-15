@@ -24,36 +24,20 @@ const CalendarScreen = () => {
   const onChangeTime = (event, selectedTime) => {
     setShowTimePicker(false);
     if (selectedTime) {
-      const hours = selectedTime.getHours();
-      const minutes = selectedTime.getMinutes();
-      const period = hours >= 12 ? "PM" : "AM";
-      
-      setCurrentEvent({
-        ...currentEvent,
-        time: selectedTime,
-        hour: hours,
-        minutes: minutes,
-        period: period, // Aquí almacenamos "AM" o "PM"
-      });
+      setCurrentEvent({ ...currentEvent, time: selectedTime });
     }
   };
-  
 
   const handleSaveEvent = () => {
-    if (!currentEvent.title || !currentEvent.subject || !currentEvent.hour || !currentEvent.minutes) {
+    if (!currentEvent.title || !currentEvent.subject) {
       Alert.alert("Error", "Por favor, completa todos los campos.");
       return;
     }
 
-    if (currentEvent.hour < 0 || currentEvent.hour >= 24 || currentEvent.minutes < 0 || currentEvent.minutes >= 60) {
-      Alert.alert("Error", "Por favor ingresa una hora válida.");
-      return;
-    }
-
-    const eventKey = `${selectedDate} ${currentEvent.hour}:${currentEvent.minutes}`;
+    const eventKey = `${selectedDate} ${currentEvent.time.getHours()}:${currentEvent.time.getMinutes()}`;
     setEvents({ ...events, [eventKey]: { ...currentEvent, date: selectedDate } });
     setShowEventCreator(false);
-    setCurrentEvent({ date: '', title: '', subject: '', hour: '', minutes: '' });
+    setCurrentEvent({ date: '', title: '', subject: '', time: new Date() });
   };
 
   const handleCancelEvent = () => {
@@ -93,9 +77,9 @@ const CalendarScreen = () => {
           />
           <Text style={styles.modalTitle}>Hora</Text>
           <TouchableOpacity style={[styles.input, styles.timeInput]} onPress={() => setShowTimePicker(true)}>
-          <Text style={styles.Timeitem}>
-            {currentEvent.hour ? `${currentEvent.hour}:${currentEvent.minutes} ${currentEvent.period}`:''}
-          </Text>
+            <Text style={styles.Timeitem}>
+              {currentEvent.time ? `${currentEvent.time.getHours()}:${currentEvent.time.getMinutes()}` : ''}
+            </Text>
           </TouchableOpacity>
           {showTimePicker && (
             <DateTimePicker
@@ -121,7 +105,7 @@ const CalendarScreen = () => {
             <Text style={styles.eventDate}>{event.date}</Text>
             <Text style={styles.eventTitle}>{event.title}</Text>
             <Text style={styles.eventDetail}>{event.subject}</Text>
-            <Text style={styles.eventTime}>{`Hora: ${event.hour}:${event.minutes}`}</Text>
+            <Text style={styles.eventTime}>{`Hora: ${event.time.getHours()}:${event.time.getMinutes()}`}</Text>
             <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={() => handleDeleteEvent(eventKey)}>
               <Text style={styles.buttonText}>Eliminar</Text>
             </TouchableOpacity>
@@ -137,74 +121,56 @@ const CalendarScreen = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#eefffc',
   },
   customModalView: {
-    position: 'absolute',
-    top: '5%',
     backgroundColor: '#fff2ed',
     borderRadius: 20,
     padding: 20,
-    margin:10,
-    width:'95%',
+    width: '95%',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    borderWidth:1,
-    borderColor: '#450508',
+    shadowColor: '#450508',
     elevation: 5,
-    zIndex: 10,
+    margin: 10,
   },
   modalTitle: {
-    alignSelf: 'flex-start',
-    marginLeft: 12,
-    color: 'black',
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#ff5b37',
+    alignSelf: 'flex-start',
+    marginLeft: 12,
   },
   dateText: {
-    alignSelf: 'center',
-    marginVertical: 10,
-    color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#00a4a3',
+    alignSelf: 'center',
+    marginVertical: 10,
   },
   Timeitem: {
-    alignSelf: 'center',
-    marginLeft: 12,
-    color: 'black',
     fontSize: 20,
+    color: '#00a4a3',
   },
   input: {
-    height: 50,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
     width: '100%',
     borderRadius: 10,
-    color: 'black',
+    padding: 10,
+    margin: 12,
+    borderWidth: 1,
+    borderColor: '#00a4a3',
+    color: '#086567',
   },
   multilineInput: {
     height: 100,
     textAlignVertical: 'top',
   },
-  timeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   timeInput: {
-    width: '60%',
-    alignItems:'center'
-  },
-  colon: {
-    color: 'black',
-    fontSize: 24,
-    marginHorizontal: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
     backgroundColor: '#00c3bd',
@@ -219,56 +185,70 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: '#ff4122',
-    marginTop: 10,
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
   },
   eventsList: {
-    backgroundColor: '#f0f0f0',
-    margin: 20,
-    padding: 20,
+    flex: 1,
+    backgroundColor: '#f0f8ff',
     borderRadius: 10,
+    padding: 20,
+    margin: 20,
   },
   eventItem: {
     marginBottom: 10,
-    color:'black'
   },
   eventDate: {
     fontWeight: 'bold',
     fontSize: 16,
-    color: 'black',
+    color: '#ff5b37',
   },
   eventTitle: {
     fontSize: 14,
-    color: 'black',
-  },
-  eventTime: {
-    fontSize: 12,
-    color: 'black',
+    color: '#086567',
   },
   eventDetail: {
     fontSize: 12,
-    color: 'black',
+    color: '#086567',
+  },
+  eventTime: {
+    fontSize: 12,
+    color: '#086567',
   },
   floatingButton: {
-    position: 'absolute',
-    right: 30,
-    bottom: 30,
     backgroundColor: '#00c3bd',
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'absolute',
+    right: 30,
+    bottom: 30,
     elevation: 8,
   },
   floatingButtonText: {
     color: 'white',
     fontSize: 24,
   },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 40,
+    left: 20,
+  },
+  backButtonImage: {
+    width: 30,
+    height: 30,
+    marginRight: 8,
+  },
+  backButtonText: {
+    fontSize: 20,
+    color: '#086567',
+  },
 });
-
 
 export default CalendarScreen;
