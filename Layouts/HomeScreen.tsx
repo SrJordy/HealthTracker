@@ -1,54 +1,46 @@
 import React, { useEffect } from 'react';
-import { View, Text, Button, Alert, BackHandler } from 'react-native';
+import { View, Text, Alert, BackHandler, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from './AuthContext';
-import { Image } from 'react-native';
-import { StyleSheet } from 'react-native';
+
 const HomeScreen = () => {
   const { userID, setUserID } = useAuth();
   const navigation = useNavigation();
-  const userInfoText = userID === 1 ? 'Información del Paciente' : 
-  userID === 2 ? 'Información del Cuidador' : 
-  'Información del Usuario';
+
+  const userInfoText = userID === 1 ? 'Información del Paciente' : userID === 2 ? 'Información del Cuidador' : 'Información del Usuario';
+
   useEffect(() => {
     const backAction = () => {
-      // Mostrar la ventana de confirmación al presionar el botón de retroceso físico
-      Alert.alert(
-        'Cerrar Sesión',
-        '¿Estás seguro de que deseas cerrar sesión?',
-        [
-          {
-            text: 'Cancelar',
-            style: 'cancel',
+      Alert.alert('Cerrar Sesión', '¿Estás seguro de que deseas cerrar sesión?', [
+        {
+          text: 'Cancelar',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'Cerrar Sesión',
+          onPress: () => {
+            setUserID(null);
+            navigation.navigate('Login');
           },
-          {
-            text: 'Cerrar Sesión',
-            onPress: () => {
-              setUserID(null); 
-              // Si el usuario confirma, navega de regreso a la pantalla de inicio de sesión
-              navigation.navigate('Login');
-            },
-          },
-        ],
-        { cancelable: false }
-      );
-      return true; // Evitar que el botón de retroceso realice su acción predeterminada
+        },
+      ], { cancelable: false });
+      return true;
     };
 
-    // Agregar un listener al evento de retroceso físico
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
-    return () => {
-      // Limpia el listener cuando el componente se desmonta
-      backHandler.remove();
-    };
-  }, [navigation]);
-  
+    return () => backHandler.remove();
+  }, [navigation, setUserID]);
+
+  const handleLogout = () => {
+    setUserID(null);
+    navigation.navigate('Login');
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        
         <Image source={require('./src/IconoRedondo.png')} style={styles.profilePic} />
         <Text style={styles.welcomeText}>¡Bienvenido a su espacio de salud!</Text>
       </View>
@@ -56,10 +48,11 @@ const HomeScreen = () => {
       <View style={styles.userInfoSection}>
         <Text style={styles.userInfoText}>{userInfoText}:</Text>
         <Text style={styles.userInfoText}>UserID: {userID}</Text>
-        {/* Aquí puedes añadir más información del usuario */}
       </View>
 
-      {/* Aquí puedes añadir más secciones de información */}
+      <TouchableOpacity style={styles.roundButton} onPress={handleLogout}>
+        <Image source={require('./src/icons/logout.png')} style={styles.buttonIcon} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -67,7 +60,8 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f7f5',
+    justifyContent: 'space-between',
+    backgroundColor: '#eefffc',
     padding: 20,
   },
   header: {
@@ -77,12 +71,13 @@ const styles = StyleSheet.create({
   profilePic: {
     width: 100,
     height: 100,
-    borderRadius: 50, // Hace la imagen redonda
+    borderRadius: 50,
     marginBottom: 10,
+    borderWidth: 3,
   },
   welcomeText: {
     fontSize: 22,
-    color: '#3e3d42',
+    color: '#065d9e',
     fontWeight: 'bold',
   },
   userInfoSection: {
@@ -95,11 +90,29 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    borderColor: '#ff9370',
+    borderWidth: 1,
   },
   userInfoText: {
     fontSize: 18,
-    color: '#3e3d42',
+    color: '#028383',
     marginBottom: 10,
+  },
+  roundButton: {
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 30,
+    backgroundColor: '#ff5b37',
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  buttonIcon: {
+    width: 25,
+    height: 30,
+    tintColor: 'white',
   },
 });
 

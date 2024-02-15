@@ -1,31 +1,28 @@
 import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-const temperatura = require('./src/temperature.json');
-const ritmoCardiacoAnimation = require('./src/healthanimation.json'); // Cambia esto por la ruta de tu archivo Lottie
 
-const DashboardScreen = ({navigation }) => {
+const temperatura = require('./src/temperature.json');
+const ritmoCardiacoAnimation = require('./src/healthanimation.json');
+
+const DashboardScreen = ({ navigation }) => {
 
   const handleRitmoCardiacoPress = () => {
-    console.log('Ritmo Cardiaco pressed');
     navigation.navigate('RitmoCardiaco');
   };
 
   const handleTemperaturaPress = () => {
-    console.log('Temperatura pressed');
     navigation.navigate('Temperatura');
   };
 
   return (
     <View style={styles.container}>
-      {/* Tarjeta Ritmo Cardiaco */}
       <TouchableOpacity style={styles.card} onPress={handleRitmoCardiacoPress}>
         <Text style={styles.cardTitle}>Ritmo Cardíaco</Text>
         <LottieView source={ritmoCardiacoAnimation} style={styles.lottieAnimation} autoPlay loop />
         <Text style={styles.cardContent}>75 bpm</Text>
       </TouchableOpacity>
 
-      {/* Tarjeta Temperatura */}
       <TouchableOpacity style={styles.card} onPress={handleTemperaturaPress}>
         <Text style={styles.cardTitle}>Temperatura</Text>
         <LottieView source={temperatura} style={styles.lottieAnimation} autoPlay loop />
@@ -41,17 +38,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#eefffc',
   },
   card: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff2ed',
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: '#450508', 
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
     padding: 20,
     marginVertical: 10,
     width: '90%',
@@ -60,16 +58,11 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
-    color:'black'
-  },
-  cardImage: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
+    color: '#ff5b37', 
   },
   cardContent: {
     fontSize: 18,
-    color:'black'
+    color: '#00a4a3', 
   },
   lottieAnimation: {
     width: 100,

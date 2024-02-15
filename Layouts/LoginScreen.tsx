@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f4f7f5',
+    backgroundColor: '#eefffc', // --java-50
     padding: 20,
   },
   logo: {
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    color: '#3e3d42',
+    color: '#065d9e', // $curious-blue-700
     marginBottom: 16,
   },
   inputContainer: {
@@ -102,12 +102,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#e7e7e7',
+    borderColor: '#ff5b37', // $pomegranate-400 para el borde
     borderRadius: 12,
     paddingHorizontal: 16,
     alignItems: 'center',
-    elevation: 2, // Solo funciona en Android
-    shadowColor: '#000', // Sombra para iOS
+    elevation: 2, // Sombra para Android
+    shadowColor: '#ff5b37', // Sombra para iOS, usando pomegranate-400
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -116,30 +116,32 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '100%',
     fontSize: 18,
-    color: '#3e3d42',
+    color: '#086567', // --java-800 para el texto
   },
   icon: {
     marginRight: 8,
+    color: '#3caef4', // $curious-blue-400 para íconos
   },
   button: {
     width: '100%',
     height: 56,
-    backgroundColor: '#4e9f3d',
+    backgroundColor: '#ff4122', // $pomegranate-500 para el botón
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 12,
     marginTop: 8,
-    elevation: 3, // Solo funciona en Android
-    shadowColor: '#000', // Sombra para iOS
+    elevation: 3,
+    shadowColor: '#ff4122', // Sombra para iOS, usando pomegranate-500
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    },
-    buttonText: {
+  },
+  buttonText: {
     fontSize: 20,
-    color: '#ffffff',
+    color: '#ffffff', // Texto blanco para contraste
     fontWeight: 'bold',
-    },
-    });
+  },
+});
+
     
     export default Login;

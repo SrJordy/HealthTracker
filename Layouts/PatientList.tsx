@@ -1,100 +1,91 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Dimensions } from 'react-native';
 
-// Datos de ejemplo para los pacientes
 const pacientesEjemplo = [
   {
     id: '1',
     nombre: 'Juan Pérez',
     cedula: '12345678',
     edad: 30,
-    fotoUrl: 'https://via.placeholder.com/150',
   },
   {
     id: '2',
     nombre: 'Ana Gómez',
     cedula: '23456789',
     edad: 25,
-    fotoUrl: 'https://via.placeholder.com/150',
   },
   {
     id: '3',
     nombre: 'Carlos López',
     cedula: '34567890',
     edad: 40,
-    fotoUrl: 'https://via.placeholder.com/150',
   },
+  // Puedes añadir más pacientes aquí
 ];
+
+const numColumns = 2;
+const size = Dimensions.get('window').width / numColumns - 20;
 
 const CuidadorDashboard = () => {
   const handleCardPress = (pacienteId) => {
     console.log('Paciente seleccionado:', pacienteId);
-    // Implementa la navegación o cualquier otra lógica
   };
 
-  // Verifica si hay pacientes para mostrar
-  if (!pacientesEjemplo || pacientesEjemplo.length === 0) {
-    return <View style={styles.container}><Text>No hay pacientes para mostrar.</Text></View>;
-  }
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={[styles.card, { width: size, height: size }]}
+      onPress={() => handleCardPress(item.id)}
+    >
+      <View style={styles.textContainer}>
+        <Text style={styles.cardTitle}>{item.nombre}</Text>
+        <Text style={styles.cardText}>Cédula: {item.cedula}</Text>
+        <Text style={styles.cardText}>Edad: {item.edad} años</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
-    <ScrollView style={styles.container}>
-      {pacientesEjemplo.map(paciente => (
-        <TouchableOpacity
-          key={paciente.id}
-          style={styles.card}
-          onPress={() => handleCardPress(paciente.id)}
-        >
-          <Image source={{ uri: paciente.fotoUrl }} style={styles.image} />
-          <View style={styles.textContainer}>
-            <Text style={styles.cardTitle}>{paciente.nombre}</Text>
-            <Text style={styles.cardText}>Cédula: {paciente.cedula}</Text>
-            <Text style={styles.cardText}>Edad: {paciente.edad}</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+    <FlatList
+      data={pacientesEjemplo}
+      renderItem={renderItem}
+      keyExtractor={item => item.id}
+      numColumns={numColumns}
+      contentContainerStyle={styles.container}
+    />
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f0f8ff', // curious-blue-50
+    paddingHorizontal: 10,
   },
   card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffff', // white background
+    flex: 1,
+    margin: 10,
+    backgroundColor: '#fff2ed',
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: '#450508',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
-    padding: 20,
-    marginVertical: 10,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   textContainer: {
-    marginLeft: 10,
+    padding: 10,
   },
   cardTitle: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#ff5b37', // pomegranate-400
+    color: '#ff5b37',
+    textAlign: 'center',
+    marginBottom: 5,
   },
   cardText: {
-    fontSize: 18,
-    color: '#00c3bd', // java-500
-  },
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    borderColor: '#80c9f9', // curious-blue-300
-    borderWidth: 2,
+    fontSize: 14,
+    color: '#00a4a3',
+    textAlign: 'center',
   },
 });
 
