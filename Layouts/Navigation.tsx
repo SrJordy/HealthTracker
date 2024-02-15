@@ -16,7 +16,7 @@ const Calendario=require('./src/icons/calendar.png')
 const medicamento=require('./src/icons/medication.png')
 
 const BottomTabNavigator = () => {
-  const { userID, setUserID } = useAuth();
+  const { userID } = useAuth();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
