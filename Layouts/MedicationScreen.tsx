@@ -11,7 +11,7 @@ interface Medication {
 }
 
 const MedicationReminderScreen = () => {
-  const { userID } = useAuth();
+  const { user } = useAuth();
   const [medications, setMedications] = useState<Medication[]>([
     {
       id: 1,
@@ -78,7 +78,7 @@ const MedicationReminderScreen = () => {
               {calculateSchedule(med).map((time, index) => (
                 <Text key={index} style={styles.scheduleTime}>{time}</Text>
               ))}
-              {userID === 2 && (
+              {user.roles === 'cuidador' && (
                 <Button title="Eliminar" color="#ff4122" onPress={() => deleteMedication(med.id)} />
               )}
             </View>
@@ -87,7 +87,7 @@ const MedicationReminderScreen = () => {
           <Text style={styles.noMedicationsText}>No hay medicamentos registrados.</Text>
         )}
       </ScrollView>
-      {userID === 2 && (
+      {user.roles === 'cuidador' && (
         <>
           <TouchableOpacity style={styles.fab} onPress={() => setShowAddForm(!showAddForm)}>
             <Text style={styles.fabIcon}>+</Text>
