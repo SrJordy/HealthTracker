@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useAuth } from './AuthContext';
+
 
 const CalendarScreen = () => {
+  const {user}=useAuth();
+  console.log("Datos del usuario en calenadrio: ",user );
   const [showEventCreator, setShowEventCreator] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [events, setEvents] = useState({});
