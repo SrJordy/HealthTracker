@@ -16,8 +16,10 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from './AuthContext';
 
 const MedicationReminderScreen = () => {
-  const { user } = useAuth();
+  const { user, pacie } = useAuth();
   const navigation = useNavigation();
+
+  console.log("paciente: ",pacie)
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [newMed, setNewMed] = useState({
