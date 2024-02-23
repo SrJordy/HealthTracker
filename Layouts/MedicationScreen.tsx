@@ -1,187 +1,199 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, Button, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Button,
+  TouchableOpacity,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  Modal
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from './AuthContext';
-
-interface Medication {
-  id: number;
-  name: string;
-  dose: string;
-  frequencyHours: number;
-  startTime: Date;
-}
 
 const MedicationReminderScreen = () => {
   const { user } = useAuth();
-  const [medications, setMedications] = useState<Medication[]>([
-    {
-      id: 1,
-      name: 'Ibuprofeno',
-      dose: '200mg',
-      frequencyHours: 8,
-      startTime: new Date(new Date().setHours(8, 0, 0, 0)),
-    },
-    {
-      id: 2,
-      name: 'Paracetamol',
-      dose: '500mg',
-      frequencyHours: 6,
-      startTime: new Date(new Date().setHours(9, 0, 0, 0)),
-    },
-  ]);
+  const navigation = useNavigation();
+
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newMed, setNewMed] = useState({ name: '', dose: '', frequencyHours: 0, startTime: new Date() });
+  const [newMed, setNewMed] = useState({
+    name: '',
+    dose: '',
+    frequencyHours: '',
+  });
 
-  const handleFrequencyChange = (text: string) => {
-    const frequency = parseInt(text, 10);
-    if (!isNaN(frequency) && frequency > 0) {
-      setNewMed({ ...newMed, frequencyHours: frequency });
-    } else if (text === '') {
-      setNewMed({ ...newMed, frequencyHours: 0 });
-    }
+  const handleAddNewMedication = () => {
+    console.log('Agregar medicación:', newMed);
+    setShowAddForm(false); 
   };
 
-  const addNewMedication = () => {
-    const newMedication: Medication = {
-      id: Date.now(), // Usando timestamp para generar un ID único
-      name: newMed.name,
-      dose: newMed.dose,
-      frequencyHours: newMed.frequencyHours,
-      startTime: newMed.startTime,
-    };
-    setMedications([...medications, newMedication]);
+  const handleCancel = () => {
     setShowAddForm(false);
-    setNewMed({ name: '', dose: '', frequencyHours: 0, startTime: new Date() });
-  };
-
-  const calculateSchedule = (medication: Medication) => {
-    let schedule = [];
-    let nextTime = medication.startTime;
-    for (let i = 0; i < 24 / medication.frequencyHours; i++) {
-      schedule.push(nextTime.toLocaleTimeString());
-      nextTime = new Date(nextTime.getTime() + medication.frequencyHours * 3600000);
-    }
-    return schedule;
-  };
-
-  const deleteMedication = (id: number) => {
-    setMedications(medications.filter(medication => medication.id !== id));
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        {medications.length > 0 ? (
-          medications.map((med) => (
-            <View key={med.id} style={styles.medicationCard}>
-              <Text style={styles.medicationName}>{med.name} - {med.dose}</Text>
-              <Text style={styles.scheduleTitle}>Horario:</Text>
-              {calculateSchedule(med).map((time, index) => (
-                <Text key={index} style={styles.scheduleTime}>{time}</Text>
-              ))}
-              {user.roles === 'cuidador' && (
-                <Button title="Eliminar" color="#ff4122" onPress={() => deleteMedication(med.id)} />
-              )}
-            </View>
-          ))
-        ) : (
-          <Text style={styles.noMedicationsText}>No hay medicamentos registrados.</Text>
-        )}
-      </ScrollView>
+    <SafeAreaView style={styles.container}>
       {user.roles === 'cuidador' && (
-        <>
-          <TouchableOpacity style={styles.fab} onPress={() => setShowAddForm(!showAddForm)}>
-            <Text style={styles.fabIcon}>+</Text>
-          </TouchableOpacity>
-          {showAddForm && (
-            <View style={styles.formContainer}>
-              <Text style={styles.formLabel}>Nombre del medicamento:</Text>
-              <TextInput
-                placeholder="Nombre del medicamento"
-                onChangeText={(text) => setNewMed({ ...newMed, name: text })}
-                value={newMed.name}
-                style={styles.input}
-              />
-              <Text style={styles.formLabel}>Dosis:</Text>
-              <TextInput
-                placeholder="Dosis"
-                onChangeText={(text) => setNewMed({ ...newMed, dose: text })}
-                value={newMed.dose}
-                style={styles.input}
-              />
-              <Text style={styles.formLabel}>Frecuencia (horas):</Text>
-              <TextInput
-                placeholder="Frecuencia (horas)"
-                keyboardType="numeric"
-                onChangeText={handleFrequencyChange}
-                value={newMed.frequencyHours > 0 ? newMed.frequencyHours.toString() : ''}
-                style={styles.input}
-              />
-              <Button title="Agregar" onPress={addNewMedication} />
-            </View>
-          )}
-        </>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Text style={styles.backButtonText}>Volver</Text>
+        </TouchableOpacity>
       )}
-    </View>
+
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <Text style={styles.title}>Lista de Medicamentos</Text>
+        <Text style={styles.noMedicationsText}>No hay medicamentos registrados.</Text>
+      </ScrollView>
+
+      {user.roles === 'cuidador' && (
+        <TouchableOpacity style={styles.addButton} onPress={() => setShowAddForm(true)}>
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+      )}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showAddForm}
+        onRequestClose={handleCancel}
+      >
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Agregar Nuevo Medicamento</Text>
+            
+            <Text style={styles.fieldTitle}>Nombre del medicamento:</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => setNewMed({ ...newMed, name: text })}
+              value={newMed.name}
+              placeholder="Ej: Ibuprofeno"
+            />
+            
+            <Text style={styles.fieldTitle}>Dosis:</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => setNewMed({ ...newMed, dose: text })}
+              value={newMed.dose}
+              placeholder="Ej: 200mg"
+            />
+
+            <Text style={styles.fieldTitle}>Frecuencia (horas):</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              onChangeText={(text) => setNewMed({ ...newMed, frequencyHours: text })}
+              value={newMed.frequencyHours}
+              placeholder="Ej: 8"
+            />
+
+            <View style={styles.buttonGroup}>
+              <Button title="Cancelar" onPress={handleCancel} color="#6c757d" />
+              <Button title="Agregar" onPress={handleAddNewMedication} color="#007bff" />
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+    </SafeAreaView>
   );
-  
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#E3F2FD',
+  },
+  contentContainer: {
     padding: 20,
-    backgroundColor: '#fff2ed',
   },
-  medicationCard: {
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#212529',
+    alignSelf: 'center',
     marginBottom: 20,
-    padding: 10,
-    backgroundColor: '#f0f8ff',
-    borderRadius: 10,
   },
-  medicationName: {
+  backButton: {
+    margin: 10,
+    alignSelf: 'flex-start',
+  },
+  backButtonText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#065d9e',
+    color: '#007bff',
   },
-  scheduleTitle: {
-    marginTop: 10,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#028383',
-  },
-  scheduleTime: {
-    fontSize: 14,
-    color: '#086567',
-  },
-  formContainer: {
-    padding: 20,
-    marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
-    marginBottom: 10,
-    color: '#000',
-  },
-  formLabel: {
-    color: '#000',
-    marginBottom: 5,
-  },
-  fab: {
+  addButton: {
     position: 'absolute',
     right: 20,
     bottom: 20,
-    backgroundColor: '#1290de',
+    backgroundColor: '#007bff',
     width: 56,
     height: 56,
     borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  fabIcon: {
+  addButtonText: {
     fontSize: 24,
     color: 'white',
+  },
+  noMedicationsText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#6c757d',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    width: '80%',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  fieldTitle: {
+    alignSelf: 'flex-start',
+    marginLeft: 10,
+    marginTop: 10,
+    marginBottom: 5,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#212529',
+  },
+  input: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ced4da',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    fontSize: 16,
+    color: '#495057',
+    backgroundColor: '#fff',
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+    width: '100%',
   },
 });
 
