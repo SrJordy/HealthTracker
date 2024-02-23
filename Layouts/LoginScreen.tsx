@@ -9,7 +9,7 @@ const Login: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const logoImage = require('./src/IconoRedondo.png'); // Asegúrate de que la ruta a la imagen sea correcta
+  const logoImage = require('./src/IconoRedondo.png');
   const { setUser } = useAuth();
   const close_eye = require('./src/icons/closed_eye_icon_259685.png');
   const open_eye=require('./src/icons/eye_icon_259684.png');

@@ -1,54 +1,67 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Dimensions } from 'react-native';
-
-const pacientesEjemplo = [
-  {
-    id: '1',
-    nombre: 'Juan Pérez',
-    cedula: '12345678',
-    edad: 30,
-  },
-  {
-    id: '2',
-    nombre: 'Ana Gómez',
-    cedula: '23456789',
-    edad: 25,
-  },
-  {
-    id: '3',
-    nombre: 'Carlos López',
-    cedula: '34567890',
-    edad: 40,
-  },
-  // Puedes añadir más pacientes aquí
-];
+import axios from 'axios';
+import { useAuth } from './AuthContext';
 
 const numColumns = 2;
 const size = Dimensions.get('window').width / numColumns - 20;
 
 const CuidadorDashboard = () => {
-  const handleCardPress = (pacienteId) => {
-    console.log('Paciente seleccionado:', pacienteId);
+  const { user, setPaci } = useAuth(); 
+  const [pacientes, setPacientes] = useState([]);
+
+  useEffect(() => {
+    const fetchPacientes = async () => {
+      try {
+        const response = await axios.get('https://carinosaapi.onrender.com/pacientecuidador/getAll');
+        const data = response.data;
+        const pacientesFiltrados = data.filter(d => d.CuidadorID === user.Cuidador.ID);
+        setPacientes(pacientesFiltrados);
+      } catch (error) {
+        console.error('Error al obtener los pacientes:', error);
+      }
+    };
+
+    fetchPacientes();
+  }, [user.Cuidador.ID]);
+
+  const calculateAge = birthdate => {
+    const birthday = new Date(birthdate);
+    const today = new Date();
+    let age = today.getFullYear() - birthday.getFullYear();
+    const m = today.getMonth() - birthday.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+      age--;
+    }
+    return age;
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={[styles.card, { width: size, height: size }]}
-      onPress={() => handleCardPress(item.id)}
-    >
-      <View style={styles.textContainer}>
-        <Text style={styles.cardTitle}>{item.nombre}</Text>
-        <Text style={styles.cardText}>Cédula: {item.cedula}</Text>
-        <Text style={styles.cardText}>Edad: {item.edad} años</Text>
-      </View>
-    </TouchableOpacity>
-  );
+  const handleCardPress = paciente => {
+    console.log('Paciente seleccionado:', paciente);
+    setPaci(paciente); // Guardamos todos los datos del paciente seleccionado
+  };
+
+  const renderItem = ({ item }) => {
+    const edad = calculateAge(item.Paciente.User.birthdate);
+    return (
+      <TouchableOpacity
+        style={[styles.card, { width: size, height: size }]}
+        onPress={() => handleCardPress(item.Paciente.User)}
+      >
+        <View style={styles.textContainer}>
+          <Text style={styles.cardTitle}>{item.Paciente.User.firstname} {item.Paciente.User.lastname}</Text>
+          <Text style={styles.cardText}>Género: {item.Paciente.User.gender}</Text>
+          <Text style={styles.cardText}>Edad: {edad} años</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <FlatList
-      data={pacientesEjemplo}
+      data={pacientes}
       renderItem={renderItem}
-      keyExtractor={item => item.id}
+      keyExtractor={item => String(item.ID)}
       numColumns={numColumns}
       contentContainerStyle={styles.container}
     />
