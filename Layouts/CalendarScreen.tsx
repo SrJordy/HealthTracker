@@ -6,8 +6,9 @@ import { useAuth } from './AuthContext';
 
 
 const CalendarScreen = () => {
-  const {user}=useAuth();
+  const {user, pacie}=useAuth();
   console.log("Datos del usuario en calenadrio: ",user );
+  console.log("Datos del usuario en calenadrio: ",pacie );
   const [showEventCreator, setShowEventCreator] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [events, setEvents] = useState({});

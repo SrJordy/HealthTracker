@@ -6,7 +6,7 @@ import { useAuth } from './AuthContext';
 const numColumns = 2;
 const size = Dimensions.get('window').width / numColumns - 20;
 
-const CuidadorDashboard = () => {
+const CuidadorDashboard = ({navigation }) => {
   const { user, setPaci } = useAuth(); 
   const [pacientes, setPacientes] = useState([]);
 
@@ -38,7 +38,8 @@ const CuidadorDashboard = () => {
 
   const handleCardPress = paciente => {
     console.log('Paciente seleccionado:', paciente);
-    setPaci(paciente); // Guardamos todos los datos del paciente seleccionado
+    setPaci(paciente);
+    navigation.navigate('Dashboard');
   };
 
   const renderItem = ({ item }) => {

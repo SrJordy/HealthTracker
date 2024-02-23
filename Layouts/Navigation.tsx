@@ -54,15 +54,14 @@ const BottomTabNavigator = () => {
         <>
           <Tab.Screen name="Datos" component={DashboardScreen} />
           <Tab.Screen name="Calendario" component={CalendarScreen} />
+          <Tab.Screen name="Medicamento" component={MedicationReminderScreen} />
         </>
       )}
       {user && user.roles === 'cuidador' && (
         <>
           <Tab.Screen name="Lista" component={CuidadorDashboard} />
-          <Tab.Screen name="Calendario" component={CalendarScreen} />
         </>
       )}
-      <Tab.Screen name="Medicamento" component={MedicationReminderScreen} />
     </Tab.Navigator>
   );
 };
