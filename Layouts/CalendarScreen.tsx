@@ -1,29 +1,39 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  SafeAreaView,
+} from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAuth } from './AuthContext';
-
+import { useNavigation } from '@react-navigation/native';
 
 const CalendarScreen = () => {
-  const {user, pacie}=useAuth();
-  console.log("Datos del usuario en calenadrio: ",user );
-  console.log("Datos del usuario en calenadrio: ",pacie );
+  const { user } = useAuth();
+  const navigation = useNavigation();
   const [showEventCreator, setShowEventCreator] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [events, setEvents] = useState({});
   const [currentEvent, setCurrentEvent] = useState({ date: '', title: '', subject: '', time: new Date() });
   const [showTimePicker, setShowTimePicker] = useState(false);
 
-  const onDayPress = (day) => {
-    setSelectedDate(day.dateString);
-    setShowEventCreator(false);
-    setCurrentEvent({ ...currentEvent, date: day.dateString });
+  const openEventCreator = () => {
+    setShowEventCreator(true);
+    if (selectedDate === '') {
+      setSelectedDate(new Date().toISOString().split('T')[0]);
+    }
+    setCurrentEvent({ date: selectedDate, title: '', subject: '', time: new Date() });
   };
 
-  const openEventCreator = () => {
-    setCurrentEvent({ date: selectedDate, title: '', subject: '', time: new Date() });
-    setShowEventCreator(true);
+  const onDayPress = (day) => {
+    setSelectedDate(day.dateString);
+    setCurrentEvent({ date: day.dateString, title: '', subject: '', time: new Date() });
   };
 
   const onChangeTime = (event, selectedTime) => {
@@ -35,225 +45,247 @@ const CalendarScreen = () => {
 
   const handleSaveEvent = () => {
     if (!currentEvent.title || !currentEvent.subject) {
-      Alert.alert("Error", "Por favor, completa todos los campos.");
+      Alert.alert("Error", "Por favor complete los campos requeridos.");
       return;
     }
 
-    const eventKey = `${selectedDate} ${currentEvent.time.getHours()}:${currentEvent.time.getMinutes()}`;
-    setEvents({ ...events, [eventKey]: { ...currentEvent, date: selectedDate } });
+    const eventKey = `${currentEvent.date}T${currentEvent.time.getHours()}:${currentEvent.time.getMinutes()}`;
+    setEvents({ ...events, [eventKey]: currentEvent });
     setShowEventCreator(false);
-    setCurrentEvent({ date: '', title: '', subject: '', time: new Date() });
   };
 
   const handleCancelEvent = () => {
-    setCurrentEvent({ date: '', title: '', subject: '', time: new Date() });
     setShowEventCreator(false);
   };
 
   const handleDeleteEvent = (eventKey) => {
-    const newEvents = { ...events };
-    delete newEvents[eventKey];
-    setEvents(newEvents);
+    const updatedEvents = { ...events };
+    delete updatedEvents[eventKey];
+    setEvents(updatedEvents);
   };
 
   return (
-    <View style={styles.container}>
-      <Calendar onDayPress={onDayPress} />
+    <SafeAreaView style={styles.container}>
+      {user && user.roles.includes('cuidador') && (
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Text style={styles.backButtonText}>Volver</Text>
+        </TouchableOpacity>
+      )}
+
+      <Calendar onDayPress={onDayPress} markedDates={Object.keys(events).reduce((acc, cur) => {
+        acc[cur.split("T")[0]] = { marked: true, dotColor: 'red' };
+        return acc;
+      }, {})} />
+
+      {!showEventCreator && (
+        <TouchableOpacity style={styles.addButton} onPress={openEventCreator}>
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+      )}
 
       {showEventCreator && (
-        <View style={styles.customModalView}>
-          <Text style={styles.modalTitle}>Fecha</Text>
-          <Text style={styles.dateText}>{currentEvent.date}</Text>
-          <Text style={styles.modalTitle}>Título del Evento</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Título del Evento"
-            value={currentEvent.title}
-            onChangeText={(text) => setCurrentEvent({ ...currentEvent, title: text })}
-          />
-          <Text style={styles.modalTitle}>Descripción</Text>
-          <TextInput
-            style={[styles.input, styles.multilineInput]}
-            placeholder="Asunto"
-            multiline
-            numberOfLines={4}
-            value={currentEvent.subject}
-            onChangeText={(text) => setCurrentEvent({ ...currentEvent, subject: text })}
-          />
-          <Text style={styles.modalTitle}>Hora</Text>
-          <TouchableOpacity style={[styles.input, styles.timeInput]} onPress={() => setShowTimePicker(true)}>
-            <Text style={styles.Timeitem}>
-              {currentEvent.time ? `${currentEvent.time.getHours()}:${currentEvent.time.getMinutes()}` : ''}
-            </Text>
-          </TouchableOpacity>
-          {showTimePicker && (
-            <DateTimePicker
-              value={currentEvent.time}
-              mode="time"
-              is24Hour={true}
-              display="default"
-              onChange={onChangeTime}
+        <View style={styles.overlay}>
+          <View style={styles.eventCreatorContainer}>
+            <Text style={styles.fieldLabel}>Fecha: {currentEvent.date}</Text>
+            <Text style={styles.fieldLabel}>Asunto:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Escribe el título aquí"
+              value={currentEvent.title}
+              onChangeText={(text) => setCurrentEvent({ ...currentEvent, title: text })}
             />
-          )}
-          <TouchableOpacity style={styles.button} onPress={handleSaveEvent}>
-            <Text style={styles.buttonText}>Guardar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleCancelEvent}>
-            <Text style={styles.buttonText}>Cancelar</Text>
-          </TouchableOpacity>
+            <Text style={styles.fieldLabel}>Descripción:</Text>
+            <TextInput
+              style={[styles.input, styles.multilineInput]}
+              placeholder="Escribe la descripción aquí"
+              multiline
+              value={currentEvent.subject}
+              onChangeText={(text) => setCurrentEvent({ ...currentEvent, subject: text })}
+            />
+            <TouchableOpacity style={styles.timeInput} onPress={() => setShowTimePicker(true)}>
+              <Text style={styles.timeText}>Hora: {currentEvent.time.toLocaleTimeString()}</Text>
+            </TouchableOpacity>
+            {showTimePicker && (
+              <DateTimePicker
+                value={currentEvent.time}
+                mode="time"
+                display="default"
+                onChange={onChangeTime}
+              />
+            )}
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity style={styles.button} onPress={handleSaveEvent}>
+                <Text style={styles.buttonText}>Guardar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleCancelEvent}>
+                <Text style={styles.buttonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       )}
 
-      <ScrollView style={styles.eventsList}>
-        {Object.entries(events).filter(([key, _]) => key.startsWith(selectedDate)).map(([eventKey, event]) => (
-          <View key={eventKey} style={styles.eventItem}>
-            <Text style={styles.eventDate}>{event.date}</Text>
-            <Text style={styles.eventTitle}>{event.title}</Text>
-            <Text style={styles.eventDetail}>{event.subject}</Text>
-            <Text style={styles.eventTime}>{`Hora: ${event.time.getHours()}:${event.time.getMinutes()}`}</Text>
-            <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={() => handleDeleteEvent(eventKey)}>
-              <Text style={styles.buttonText}>Eliminar</Text>
+      <ScrollView style={styles.eventsListContainer}>
+        {Object.entries(events).map(([key, event]) => (
+          <View key={key} style={styles.eventItem}>
+            <Text style={styles.eventDate}>Fecha: {event.date}</Text>
+            <Text style={styles.eventTitle}>Asunto: {event.title}</Text>
+            <Text style={styles.eventSubject}>Descripción: {event.subject}</Text>
+            <Text style={styles.eventTime}>Hora: {new Date(event.time).toLocaleTimeString()}</Text>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => handleDeleteEvent(key)}
+            >
+              <Text style={styles.deleteButtonText}>Eliminar</Text>
             </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
-
-      {!showEventCreator && selectedDate && (
-        <TouchableOpacity style={styles.floatingButton} onPress={openEventCreator}>
-          <Text style={styles.floatingButtonText}>+</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#eefffc',
+    paddingTop: 10,
   },
-  customModalView: {
-    backgroundColor: '#fff2ed',
-    borderRadius: 20,
-    padding: 20,
-    width: '95%',
-    alignItems: 'center',
-    shadowColor: '#450508',
-    elevation: 5,
-    margin: 10,
+  backButton: {
+    marginLeft: 10,
+    marginBottom: 10,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: '#ddd',
   },
-  modalTitle: {
+  backButtonText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ff5b37',
-    alignSelf: 'flex-start',
-    marginLeft: 12,
+    color: '#000',
   },
-  dateText: {
+  overlay: {
+    position: 'absolute',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex:1,
+  },
+  eventCreatorContainer: {
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    width: '90%',
+    maxWidth: 400,
+  },
+  fieldLabel: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#00a4a3',
-    alignSelf: 'center',
-    marginVertical: 10,
-  },
-  Timeitem: {
-    fontSize: 20,
-    color: '#00a4a3',
+    marginBottom: 5,
+    color: 'black',
   },
   input: {
-    width: '100%',
-    borderRadius: 10,
+    marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
     padding: 10,
-    margin: 12,
-    borderWidth: 1,
-    borderColor: '#00a4a3',
-    color: '#086567',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    color: 'black',
   },
   multilineInput: {
     height: 100,
     textAlignVertical: 'top',
   },
   timeInput: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 10,
+    marginBottom: 15,
+    backgroundColor: '#eee',
+    borderRadius: 5,
+  },
+  timeText: {
+    color: 'black',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   button: {
-    backgroundColor: '#00c3bd',
-    borderRadius: 10,
+    backgroundColor: '#4CAF50',
     padding: 10,
-    marginTop: 10,
-    width: '80%',
+    borderRadius: 5,
+    minWidth: 100,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: 'grey',
-  },
-  deleteButton: {
-    backgroundColor: '#ff4122',
+    backgroundColor: '#f44336',
   },
   buttonText: {
     color: 'white',
-    fontWeight: 'bold',
-  },
-  eventsList: {
-    flex: 1,
-    backgroundColor: '#f0f8ff',
-    borderRadius: 10,
-    padding: 20,
-    margin: 20,
-  },
-  eventItem: {
-    marginBottom: 10,
-  },
-  eventDate: {
-    fontWeight: 'bold',
     fontSize: 16,
-    color: '#ff5b37',
   },
-  eventTitle: {
-    fontSize: 14,
-    color: '#086567',
-  },
-  eventDetail: {
-    fontSize: 12,
-    color: '#086567',
-  },
-  eventTime: {
-    fontSize: 12,
-    color: '#086567',
-  },
-  floatingButton: {
-    backgroundColor: '#00c3bd',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+  addButton: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    backgroundColor: '#007bff',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    right: 30,
-    bottom: 30,
-    elevation: 8,
+    zIndex: 10, // Asegura que el botón esté por encima de otros elementos
   },
-  floatingButtonText: {
-    color: 'white',
+  
+  addButtonText: {
     fontSize: 24,
+    color: 'white',
   },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 40,
-    left: 20,
+  eventsListContainer: {
+    marginTop: 20,
   },
-  backButtonImage: {
-    width: 30,
-    height: 30,
-    marginRight: 8,
+  eventItem: {
+    backgroundColor: '#f9f9f9',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    marginHorizontal: 10,
   },
-  backButtonText: {
-    fontSize: 20,
-    color: '#086567',
+  eventDate: {
+    fontSize: 16,
+    color: '#333',
+  },
+  eventTitle: {
+    marginTop: 5,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  eventSubject: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 5,
+  },
+  eventTime: {
+    fontSize: 14,
+    color: '#555',
+    marginTop: 5,
+  },
+  deleteButton: {
+    marginTop: 10,
+    backgroundColor: '#ff6347',
+    padding: 10,
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
+
+
 
 export default CalendarScreen;
