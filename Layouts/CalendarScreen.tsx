@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -26,19 +26,20 @@ const CalendarScreen = () => {
   const [currentEvent, setCurrentEvent] = useState({ date: '', title: '', subject: '', time: new Date() });
   const [showTimePicker, setShowTimePicker] = useState(false);
 
-  
+  const loadEvents = useCallback(async () => {
+    try {
+      const response = await axios.get('https://carinosaapi.onrender.com/agenda/getAll');
+      const data = response.data.filter(event => event.paciente_id === pacie.ID);
+      setFilteredEvents(data);
+    } catch (error) {
+      console.error('Error al obtener los eventos:', error);
+      Alert.alert("Error", "No se pudieron cargar los eventos.");
+    }
+  }, [pacie.ID]);
+
+
   useEffect(() => {
-    const loadEvents = async () => {
-      try {
-        const response = await axios.get('https://carinosaapi.onrender.com/agenda/getAll');
-        const data = response.data;
-        const eventsForPacie = data.filter(event => event.paciente_id === pacie.ID);
-        setFilteredEvents(eventsForPacie);
-      } catch (error) {
-        console.error('Error al obtener los eventos:', error);
-        Alert.alert("Error", "No se pudieron cargar los eventos.");
-      }
-    };
+    loadEvents();
   
     const loadPacienteCuidadorRelation = async () => {
       try {
@@ -54,8 +55,6 @@ const CalendarScreen = () => {
         console.error('Error al obtener la relación Paciente-Cuidador:', error);
       }
     };
-  
-    loadEvents();
   
     if (user.roles.includes('paciente')) {
       loadPacienteCuidadorRelation();
@@ -103,6 +102,7 @@ const CalendarScreen = () => {
         console.log('Evento guardado con éxito:', response.data);
         setCurrentEvent({ date: '', title: '', subject: '', time: new Date() });
         setShowEventCreator(false);
+        loadEvents();
         Alert.alert("Éxito", "Agenda exitosa");
       })
       .catch(error => {
