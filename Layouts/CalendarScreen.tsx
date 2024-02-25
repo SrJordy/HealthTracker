@@ -11,17 +11,20 @@ import {
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import axios from 'axios'; // Asegúrate de importar axios
 import { useAuth } from './AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
 const CalendarScreen = () => {
-  const { user } = useAuth();
+  const { user, pacie } = useAuth();
   const navigation = useNavigation();
   const [showEventCreator, setShowEventCreator] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [events, setEvents] = useState({});
   const [currentEvent, setCurrentEvent] = useState({ date: '', title: '', subject: '', time: new Date() });
   const [showTimePicker, setShowTimePicker] = useState(false);
+
+  console.log('paciente que eve:', pacie.ID);
 
   const openEventCreator = () => {
     setShowEventCreator(true);
@@ -48,13 +51,39 @@ const CalendarScreen = () => {
       Alert.alert("Error", "Por favor complete los campos requeridos.");
       return;
     }
-
-    const eventKey = `${currentEvent.date}T${currentEvent.time.getHours()}:${currentEvent.time.getMinutes()}`;
-    setEvents({ ...events, [eventKey]: currentEvent });
-    setShowEventCreator(false);
+  
+    const fechaISO = new Date(currentEvent.date + 'T' + currentEvent.time.toISOString().split('T')[1]).toISOString();
+  
+    const eventToSave = {
+      PacienteID: pacie.ID,
+      nombre: currentEvent.title,
+      descripcion: currentEvent.subject,
+      Fecha: fechaISO,
+      Hora: fechaISO  
+    };
+  
+    console.log('Datos del evento a guardar:', eventToSave);
+  
+    axios.post('https://carinosaapi.onrender.com/agenda/insert', eventToSave)
+      .then(response => {
+        console.log('Evento guardado con éxito:', response.data);
+        // Restablecer currentEvent a sus valores iniciales y cerrar el formulario
+        setCurrentEvent({ date: '', title: '', subject: '', time: new Date() });
+        setShowEventCreator(false);
+        // Mostrar mensaje de éxito
+        Alert.alert("Éxito", "Agenda exitosa");
+        // Aquí podrías también actualizar 'events' si quieres reflejar el nuevo evento en la UI
+      })
+      .catch(error => {
+        console.error('Error al guardar el evento:', error);
+        Alert.alert("Error", "No se pudo guardar el evento. Intente nuevamente.");
+      });
   };
+  
+  
 
   const handleCancelEvent = () => {
+    setCurrentEvent({ date: '', title: '', subject: '', time: new Date() });
     setShowEventCreator(false);
   };
 
@@ -77,7 +106,7 @@ const CalendarScreen = () => {
         return acc;
       }, {})} />
 
-      {!showEventCreator && (
+      {user && user.roles.includes('cuidador') && !showEventCreator && (
         <TouchableOpacity style={styles.addButton} onPress={openEventCreator}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
@@ -132,12 +161,11 @@ const CalendarScreen = () => {
             <Text style={styles.eventTitle}>Asunto: {event.title}</Text>
             <Text style={styles.eventSubject}>Descripción: {event.subject}</Text>
             <Text style={styles.eventTime}>Hora: {new Date(event.time).toLocaleTimeString()}</Text>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => handleDeleteEvent(key)}
-            >
-              <Text style={styles.deleteButtonText}>Eliminar</Text>
-            </TouchableOpacity>
+            {user && user.roles.includes('cuidador') && (
+              <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteEvent(key)}>
+                <Text style={styles.deleteButtonText}>Eliminar</Text>
+              </TouchableOpacity>
+            )}
           </View>
         ))}
       </ScrollView>

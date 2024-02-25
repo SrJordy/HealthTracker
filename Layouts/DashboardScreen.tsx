@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    marginBottom: 20, // Añade un margen abajo para separar las filas
+    marginBottom: 20,
   },
   card: {
     alignItems: 'center',
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     padding: 20,
-    width: cardSize, // Mantiene los cards cuadrados
+    width: cardSize,
   },
   cardTitle: {
     fontWeight: 'bold',

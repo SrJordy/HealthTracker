@@ -6,8 +6,8 @@ import { useAuth } from './AuthContext';
 const numColumns = 2;
 const size = Dimensions.get('window').width / numColumns - 20;
 
-const CuidadorDashboard = ({navigation }) => {
-  const { user, setPaci } = useAuth(); 
+const CuidadorDashboard = ({navigation}) => {
+  const { user, setPaci} = useAuth(); 
   const [pacientes, setPacientes] = useState([]);
 
   useEffect(() => {
@@ -15,7 +15,9 @@ const CuidadorDashboard = ({navigation }) => {
       try {
         const response = await axios.get('https://carinosaapi.onrender.com/pacientecuidador/getAll');
         const data = response.data;
-        const pacientesFiltrados = data.filter(d => d.CuidadorID === user.Cuidador.ID);
+        const pacientesFiltrados = data
+          .filter(d => d.CuidadorID === user.Cuidador.ID)
+          .map(item => item.Paciente);
         setPacientes(pacientesFiltrados);
       } catch (error) {
         console.error('Error al obtener los pacientes:', error);
@@ -37,22 +39,23 @@ const CuidadorDashboard = ({navigation }) => {
   };
 
   const handleCardPress = paciente => {
-    console.log('Paciente seleccionado:', paciente);
     setPaci(paciente);
+    console.log('paciente seleciconado:', paciente)
     navigation.navigate('Dashboard');
   };
 
   const renderItem = ({ item }) => {
-    const edad = calculateAge(item.Paciente.User.birthdate);
+    const edad = calculateAge(item.User.birthdate);
     return (
       <TouchableOpacity
         style={[styles.card, { width: size, height: size }]}
-        onPress={() => handleCardPress(item.Paciente.User)}
+        onPress={() => handleCardPress(item)}
       >
         <View style={styles.textContainer}>
-          <Text style={styles.cardTitle}>{item.Paciente.User.firstname} {item.Paciente.User.lastname}</Text>
-          <Text style={styles.cardText}>Género: {item.Paciente.User.gender}</Text>
+          <Text style={styles.cardTitle}>{item.User.firstname} {item.User.lastname}</Text>
+          <Text style={styles.cardText}>Género: {item.User.gender}</Text>
           <Text style={styles.cardText}>Edad: {edad} años</Text>
+          <Text style={styles.cardText}>Cedula: {item.cedula}</Text>
         </View>
       </TouchableOpacity>
     );
