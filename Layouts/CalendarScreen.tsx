@@ -213,21 +213,21 @@ const CalendarScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0', // Fondo más claro para el contenedor principal
+    backgroundColor: '#f0f0f0',
   },
   backButton: {
     margin:5,
     padding: 10,
     borderRadius: 5,
-    backgroundColor: '#007bff', // Botón para volver con el color principal de la app
+    backgroundColor: '#007bff',
   },
   backButtonText: {
     fontSize: 18,
-    color: '#ffffff', // Texto blanco para contraste
+    color: '#ffffff',
   },
   overlay: {
     position: 'absolute',
-    backgroundColor: 'rgba(0,0,0,0.7)', // Hacer el fondo del overlay más oscuro para mejor enfoque
+    backgroundColor: 'rgba(0,0,0,0.7)', 
     top: 0,
     bottom: 0,
     left: 0,
@@ -238,11 +238,11 @@ const styles = StyleSheet.create({
   },
   eventCreatorContainer: {
     padding: 20,
-    backgroundColor: '#ffffff', // Fondo blanco para el formulario
+    backgroundColor: '#ffffff',
     borderRadius: 10,
     width: '90%',
     maxWidth: 400,
-    shadowColor: '#000', // Sombra para darle profundidad
+    shadowColor: '#000', 
     shadowOffset: {
       width: 0,
       height: 2,
@@ -255,16 +255,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#333333', // Texto oscuro para mejor lectura
+    color: '#333333', 
   },
   input: {
     marginBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#007bff', // Color principal para la línea del input
+    borderBottomColor: '#007bff',
     padding: 10,
-    backgroundColor: '#ffffff', // Fondo blanco para los inputs
+    backgroundColor: '#ffffff', 
     borderRadius: 5,
-    color: '#333333', // Texto oscuro para los inputs
+    color: '#333333',
   },
   multilineInput: {
     height: 100,
@@ -273,18 +273,18 @@ const styles = StyleSheet.create({
   timeInput: {
     padding: 10,
     marginBottom: 15,
-    backgroundColor: '#eee', // Fondo más claro para el input de tiempo
+    backgroundColor: '#eee',
     borderRadius: 5,
   },
   timeText: {
-    color: '#333333', // Texto oscuro para mejor lectura
+    color: '#333333', 
   },
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
   button: {
-    backgroundColor: '#28a745', // Botón verde para acciones positivas
+    backgroundColor: '#28a745', 
     padding: 10,
     borderRadius: 5,
     minWidth: 100,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#dc3545', // Botón rojo para cancelar o acciones negativas
+    backgroundColor: '#dc3545', 
   },
   buttonText: {
     color: 'white',
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     bottom: 20,
-    backgroundColor: '#17a2b8', // Color distinto para el botón de agregar
+    backgroundColor: '#17a2b8',
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -318,12 +318,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   eventItem: {
-    backgroundColor: '#ffffff', // Fondo blanco para los items del evento
+    backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
     marginHorizontal: 10,
-    shadowColor: '#000', // Sombra para darle profundidad
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -340,11 +340,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#007bff', // Usar el color principal para el título del evento
+    color: '#007bff', 
   },
   eventSubject: {
     fontSize: 16,
-    color: '#666666', // Color más suave para la descripción
+    color: '#666666', 
   },
   eventTime: {
     fontSize: 14,
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     marginTop: 10,
-    backgroundColor: '#dc3545', // Mantener el rojo para eliminar
+    backgroundColor: '#dc3545',
     padding: 10,
     borderRadius: 5,
   },
