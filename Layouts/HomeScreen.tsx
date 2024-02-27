@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from './AuthContext';
 
 const HomeScreen = () => {
-  const { user, setUser } = useAuth();
+  const { user, setUser,setPaci } = useAuth();
   const navigation = useNavigation();
   
   useEffect(() => {
@@ -17,6 +17,7 @@ const HomeScreen = () => {
 
   const handleLogout = () => {
     setUser(null);
+    setPaci(null);
     navigation.replace('Login'); 
   };
 
