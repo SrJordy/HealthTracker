@@ -6,6 +6,7 @@ import { useAuth } from './AuthContext';
 const HomeScreen = () => {
   const { user, setUser } = useAuth();
   const navigation = useNavigation();
+  
   useEffect(() => {
     const backAction = () => {
       return true;
@@ -13,6 +14,7 @@ const HomeScreen = () => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () => BackHandler.removeEventListener('hardwareBackPress', backAction);
   }, []);
+
   const handleLogout = () => {
     setUser(null);
     navigation.replace('Login'); 
@@ -26,11 +28,30 @@ const HomeScreen = () => {
       </View>
 
       <View style={styles.userInfoSection}>
-        <Text style={styles.userInfoText}>Rol: {user ? user.roles : 'N/A'}</Text>
-        <Text style={styles.userInfoText}>Email: {user ? user.email : 'N/A'}</Text>
-        <Text style={styles.userInfoText}>Género: {user ? user.gender : 'N/A'}</Text>
-        <Text style={styles.userInfoText}>Fecha de nacimiento: {user ? user.birthdate : 'N/A'}</Text>
-        <Text style={styles.userInfoText}>Teléfono: {user ? user.phone : 'N/A'}</Text>
+        <View style={styles.userInfoItem}>
+          <Text style={styles.userInfoLabel}>Rol:</Text>
+          <Text style={styles.userInfoText}>{user ? user.roles : 'N/A'}</Text>
+        </View>
+        <View style={styles.userInfoItem}>
+          <Text style={styles.userInfoLabel}>Email:</Text>
+          <Text style={styles.userInfoText}>{user ? user.email : 'N/A'}</Text>
+        </View>
+        <View style={styles.userInfoItem}>
+          <Text style={styles.userInfoLabel}>Género:</Text>
+          <Text style={styles.userInfoText}>{user ? user.gender : 'N/A'}</Text>
+        </View>
+        <View style={styles.userInfoItem}>
+          <Text style={styles.userInfoLabel}>Fecha de nacimiento:</Text>
+          <Text style={styles.userInfoText}>{user ? user.birthdate : 'N/A'}</Text>
+        </View>
+        <View style={styles.userInfoItem}>
+          <Text style={styles.userInfoLabel}>Teléfono:</Text>
+          <Text style={styles.userInfoText}>{user ? user.phone : 'N/A'}</Text>
+        </View>
+        <View style={styles.userInfoItem}>
+          <Text style={styles.userInfoLabel}>Cédula:</Text>
+          <Text style={styles.userInfoText}>{user ? user.cedula : 'N/A'}</Text>
+        </View>
       </View>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -46,9 +67,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: '#F0F8FF',
+    padding: 20,
   },
   header: {
-    marginTop: 20,
     alignItems: 'center',
   },
   profilePic: {
@@ -61,7 +82,7 @@ const styles = StyleSheet.create({
   welcomeText: {
     marginTop: 10,
     fontSize: 20,
-    color: '#333333',
+    color: '#ff4122', // Nuevo color
     fontWeight: 'bold',
   },
   userInfoSection: {
@@ -69,18 +90,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 15,
     padding: 20,
-    width: '90%',
+    width: '100%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
   },
+  userInfoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  userInfoLabel: {
+    fontSize: 16,
+    color: '#1290de', // Nuevo color
+    fontWeight: 'bold',
+  },
   userInfoText: {
     fontSize: 16,
-    color: '#555555',
-    marginBottom: 10,
-    lineHeight: 24,
+    color: '#0675c3', // Nuevo color
   },
   logoutButton: {
     marginTop: 20,
@@ -89,6 +118,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 25,
     elevation: 2,
+    alignSelf: 'center',
   },
   logoutButtonText: {
     color: '#ffffff',
