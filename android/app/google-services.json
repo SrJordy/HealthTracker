@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "798041694675",
+    "project_id": "notificauteq-19631",
+    "storage_bucket": "notificauteq-19631.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798041694675:android:83ff9226558c6b4a0ecf26",
+        "android_client_info": {
+          "package_name": "com.healthtracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP6i2rcvn5Q5V4cU778kbxSuXTgt3sKts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798041694675-5qa9pne7mjttpjijc7rk8483kvkh6p2e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798041694675:android:6c7187dd13838b800ecf26",
+        "android_client_info": {
+          "package_name": "com.uteq.healthtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798041694675-aor04r9pfo4s9c3lumcap9da44168162.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uteq.healthtracker",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP6i2rcvn5Q5V4cU778kbxSuXTgt3sKts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798041694675-5qa9pne7mjttpjijc7rk8483kvkh6p2e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
