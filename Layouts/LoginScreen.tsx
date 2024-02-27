@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Props } from './Components/NavigationStyle';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
+import messaging from '@react-native-firebase/messaging'; // Importa Firebase Messaging
 
 const Login: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -13,16 +14,36 @@ const Login: React.FC<Props> = ({ navigation }) => {
   const { setUser } = useAuth();
   const close_eye = require('./src/icons/closed_eye_icon_259685.png');
   const open_eye=require('./src/icons/eye_icon_259684.png');
+  const [deviceToken, setDeviceToken] = useState('');
 
   const API_URL = 'https://carinosaapi.onrender.com/api';
+
+  useEffect(() => {
+    // Obtener el token del dispositivo al cargar el componente
+    getDeviceToken();
+  }, []);
+
+  const getDeviceToken = async () => {
+    // Solicitar permiso para recibir notificaciones
+    const permissionStatus = await messaging().requestPermission();
+
+    if (permissionStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+      // Obteniendo token del dispositivo
+      const token = await messaging().getToken();
+      console.log('Device Token:', token);
+      setDeviceToken(token);
+    } else {
+      console.log('No se pudo obtener el permiso para recibir notificaciones.');
+    }
+  };
 
   const handleLogin = async () => {
     if (email === '' || password === '') {
       Alert.alert('Error', 'Por favor llene todos los campos');
     } else {
       try {
-        console.log('Enviando datos de inicio de sesión:', { email, password });
-        const response = await axios.post(`${API_URL}/login`, { email, password });
+        console.log('Enviando datos de inicio de sesión:', { email, password, deviceToken });
+        const response = await axios.post(`${API_URL}/login`, { email, password, deviceToken });
         console.log('Respuesta del servidor:', response.data);
         if (response.data.user) {
           setUser(response.data.user);
@@ -149,5 +170,4 @@ const styles = StyleSheet.create({
   },
 });
 
-    
 export default Login;

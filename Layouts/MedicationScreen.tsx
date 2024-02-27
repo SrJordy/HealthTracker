@@ -19,7 +19,7 @@ const MedicationReminderScreen = () => {
   const { user, pacie } = useAuth();
   const navigation = useNavigation();
 
-  console.log("paciente: ",pacie)
+  console.log("paciente: ",pacie.ID)
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [newMed, setNewMed] = useState({
