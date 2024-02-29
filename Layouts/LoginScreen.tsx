@@ -19,12 +19,10 @@ const Login: React.FC<Props> = ({ navigation }) => {
   const API_URL = 'https://carinosaapi.onrender.com/api';
 
   useEffect(() => {
-    // Obtener el token del dispositivo al cargar el componente
     getDeviceToken();
   }, []);
 
   const getDeviceToken = async () => {
-    // Solicitar permiso para recibir notificaciones
     const permissionStatus = await messaging().requestPermission();
 
     if (permissionStatus === messaging.AuthorizationStatus.AUTHORIZED) {
