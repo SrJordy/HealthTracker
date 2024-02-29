@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "276089378751",
+    "project_id": "healthtracker-4c5ca",
+    "storage_bucket": "healthtracker-4c5ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276089378751:android:85ab1515e9be9b59ebf30a",
+        "android_client_info": {
+          "package_name": "com.uteq.healthtracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj3mZ4wjmi3UuU_jUniKKTCh34QrttDkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
