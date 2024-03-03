@@ -37,39 +37,54 @@ const MedicationReminderScreen = () => {
   const [showScheduleForm, setShowScheduleForm] = useState(false);
 
   useEffect(() => {
-    let pacienteId = user.roles === 'paciente' ? user.Paciente.ID : pacie.ID;
-    fetch(`https://carinosaapi.onrender.com/horariomedicamentos/getAll?paciente_id=${pacienteId}`)
+    const pacienteId = user.roles === 'paciente' ? user.Paciente.ID : pacie.ID;
+  
+    fetch('https://carinosaapi.onrender.com/horariomedicamentos/getAll')
       .then((response) => response.json())
       .then((data) => {
-        const groupedMedications = data.reduce((acc, medication) => {
-          const { medicamento_id } = medication;
-          if (!acc[medicamento_id]) {
-            acc[medicamento_id] = [];
-          }
-          acc[medicamento_id].push(medication);
-          return acc;
-        }, {});
-
-        const medicationsWithMaxDoses = Object.values(groupedMedications).map((medications) => {
-          medications.sort((a, b) => b.dosis_restantes - a.dosis_restantes);
-          const medicationWithMaxDose = medications[0];
-
-          const calculatedTimes = [];
-          for (let i = 0; i < medicationWithMaxDose.dosis_restantes; i++) {
-            const time = new Date(new Date(medicationWithMaxDose.hora_inicial).getTime() + i * medicationWithMaxDose.frecuencia * 3600000);
-            calculatedTimes.push(time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-          }
-
-          return {
-            ...medicationWithMaxDose,
-            horasConsumo: calculatedTimes,
-          };
-        });
-
-        setMedicationData(medicationsWithMaxDoses);
+        // Filtrar en el cliente los medicamentos por paciente_id
+        const medicamentosFiltrados = data.filter(med => med.paciente_id === pacienteId);
+  
+        if (medicamentosFiltrados.length > 0) {
+          // Procesar los medicamentos filtrados como antes
+          const groupedMedications = medicamentosFiltrados.reduce((acc, medication) => {
+            const { medicamento_id } = medication;
+            if (!acc[medicamento_id]) {
+              acc[medicamento_id] = [];
+            }
+            acc[medicamento_id].push(medication);
+            return acc;
+          }, {});
+  
+          const medicationsWithMaxDoses = Object.values(groupedMedications).map((medications) => {
+            medications.sort((a, b) => b.dosis_restantes - a.dosis_restantes);
+            const medicationWithMaxDose = medications[0];
+  
+            const calculatedTimes = [];
+            for (let i = 0; i < medicationWithMaxDose.dosis_restantes; i++) {
+              const time = new Date(new Date(medicationWithMaxDose.hora_inicial).getTime() + i * medicationWithMaxDose.frecuencia * 3600000);
+              calculatedTimes.push(time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            }
+  
+            return {
+              ...medicationWithMaxDose,
+              horasConsumo: calculatedTimes,
+            };
+          });
+  
+          setMedicationData(medicationsWithMaxDoses);
+        } else {
+          // Si no hay medicamentos para el paciente actual, puedes manejarlo como prefieras
+          setMedicationData([]);
+          Alert.alert("Información", "No hay medicamentos registrados para este paciente.");
+        }
       })
-      .catch((error) => console.error('Error al obtener medicamentos:', error));
-  }, [user, pacie]);
+      .catch((error) => {
+        console.error('Error al obtener medicamentos:', error);
+        Alert.alert('Error', 'Error al cargar los medicamentos. Por favor, intente más tarde.');
+      });
+  }, [user, pacie]); // Dependencias del useEffect
+  
 
   //obtener los medicamentos generales
   useEffect(() => {
