@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -17,7 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const CalendarScreen = () => {
   const { user, pacie } = useAuth();
-  console.log('datos del paciente:', pacie.User.ID)
+  const pacienteID = user.roles === 'paciente' ? user.Paciente.ID : pacie.ID;
   const navigation = useNavigation();
   const [showEventCreator, setShowEventCreator] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
@@ -29,18 +29,19 @@ const CalendarScreen = () => {
   const loadEvents = useCallback(async () => {
     try {
       const response = await axios.get('https://carinosaapi.onrender.com/agenda/getAll');
-      const data = response.data.filter(event => event.paciente_id === pacie.ID);
+      const data = response.data.filter(event => event.paciente_id === pacienteID); // Usar pacienteID
       setFilteredEvents(data);
     } catch (error) {
       console.error('Error al obtener los eventos:', error);
       Alert.alert("Error", "No se pudieron cargar los eventos.");
     }
-  }, [pacie.ID]);
+  }, [pacienteID]); // Dependencia de pacienteID en useCallback
+
 
 
   useEffect(() => {
     loadEvents();
-  
+
     const loadPacienteCuidadorRelation = async () => {
       try {
         const response = await axios.get('https://carinosaapi.onrender.com/pacientecuidador/getAll');
@@ -55,11 +56,11 @@ const CalendarScreen = () => {
         console.error('Error al obtener la relación Paciente-Cuidador:', error);
       }
     };
-  
+
     if (user.roles.includes('paciente')) {
       loadPacienteCuidadorRelation();
     }
-  }, [pacie.ID, user.ID, user.roles]); 
+  }, [pacienteID, user.ID, user.roles]);
 
   const openEventCreator = () => {
     setShowEventCreator(true);
@@ -90,7 +91,7 @@ const CalendarScreen = () => {
     const fechaISO = new Date(currentEvent.date + 'T' + currentEvent.time.toISOString().split('T')[1]).toISOString();
 
     const eventToSave = {
-      PacienteID: pacie.ID,
+      PacienteID: pacienteID, // Usar pacienteID aquí
       nombre: currentEvent.title,
       descripcion: currentEvent.subject,
       Fecha: fechaISO,
@@ -103,13 +104,14 @@ const CalendarScreen = () => {
         setCurrentEvent({ date: '', title: '', subject: '', time: new Date() });
         setShowEventCreator(false);
         loadEvents();
-        Alert.alert("Éxito", "Agenda exitosa");
+        Alert.alert("Éxito", "Evento guardado exitosamente");
       })
       .catch(error => {
         console.error('Error al guardar el evento:', error);
         Alert.alert("Error", "No se pudo guardar el evento. Intente nuevamente.");
       });
   };
+
 
   const handleCancelEvent = () => {
     setShowEventCreator(false);
@@ -151,6 +153,7 @@ const CalendarScreen = () => {
         <View style={styles.overlay}>
           <View style={styles.eventCreatorContainer}>
             <Text style={styles.fieldLabel}>Fecha: {currentEvent.date}</Text>
+            <Text style={styles.fieldLabel}>Asunto: </Text>
             <TextInput
               style={styles.input}
               placeholder="Escribe el título aquí"
@@ -216,7 +219,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   backButton: {
-    margin:5,
+    margin: 5,
     padding: 10,
     borderRadius: 5,
     backgroundColor: '#007bff',
@@ -227,7 +230,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     position: 'absolute',
-    backgroundColor: 'rgba(0,0,0,0.7)', 
+    backgroundColor: 'rgba(0,0,0,0.7)',
     top: 0,
     bottom: 0,
     left: 0,
@@ -242,7 +245,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '90%',
     maxWidth: 400,
-    shadowColor: '#000', 
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -255,14 +258,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#333333', 
+    color: '#333333',
   },
   input: {
     marginBottom: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#007bff',
     padding: 10,
-    backgroundColor: '#ffffff', 
+    backgroundColor: '#ffffff',
     borderRadius: 5,
     color: '#333333',
   },
@@ -277,14 +280,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   timeText: {
-    color: '#333333', 
+    color: '#333333',
   },
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
   button: {
-    backgroundColor: '#28a745', 
+    backgroundColor: '#28a745',
     padding: 10,
     borderRadius: 5,
     minWidth: 100,
@@ -292,7 +295,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#dc3545', 
+    backgroundColor: '#dc3545',
   },
   buttonText: {
     color: 'white',
@@ -340,11 +343,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#007bff', 
+    color: '#007bff',
   },
   eventSubject: {
     fontSize: 16,
-    color: '#666666', 
+    color: '#666666',
   },
   eventTime: {
     fontSize: 14,

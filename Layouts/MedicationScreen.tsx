@@ -38,13 +38,13 @@ const MedicationReminderScreen = () => {
 
   useEffect(() => {
     const pacienteId = user.roles === 'paciente' ? user.Paciente.ID : pacie.ID;
-  
+
     fetch('https://carinosaapi.onrender.com/horariomedicamentos/getAll')
       .then((response) => response.json())
       .then((data) => {
         // Filtrar en el cliente los medicamentos por paciente_id
         const medicamentosFiltrados = data.filter(med => med.paciente_id === pacienteId);
-  
+
         if (medicamentosFiltrados.length > 0) {
           // Procesar los medicamentos filtrados como antes
           const groupedMedications = medicamentosFiltrados.reduce((acc, medication) => {
@@ -55,23 +55,23 @@ const MedicationReminderScreen = () => {
             acc[medicamento_id].push(medication);
             return acc;
           }, {});
-  
+
           const medicationsWithMaxDoses = Object.values(groupedMedications).map((medications) => {
             medications.sort((a, b) => b.dosis_restantes - a.dosis_restantes);
             const medicationWithMaxDose = medications[0];
-  
+
             const calculatedTimes = [];
             for (let i = 0; i < medicationWithMaxDose.dosis_restantes; i++) {
               const time = new Date(new Date(medicationWithMaxDose.hora_inicial).getTime() + i * medicationWithMaxDose.frecuencia * 3600000);
               calculatedTimes.push(time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
             }
-  
+
             return {
               ...medicationWithMaxDose,
               horasConsumo: calculatedTimes,
             };
           });
-  
+
           setMedicationData(medicationsWithMaxDoses);
         } else {
           // Si no hay medicamentos para el paciente actual, puedes manejarlo como prefieras
@@ -84,7 +84,7 @@ const MedicationReminderScreen = () => {
         Alert.alert('Error', 'Error al cargar los medicamentos. Por favor, intente más tarde.');
       });
   }, [user, pacie]); // Dependencias del useEffect
-  
+
 
   //obtener los medicamentos generales
   useEffect(() => {
@@ -156,28 +156,28 @@ const MedicationReminderScreen = () => {
   };
 
   const guardarHorario = async () => {
-    console.log("id del paciente",pacienteID);
+    console.log("id del paciente", pacienteID);
     // Asegurarse de que medicamentoSeleccionado no sea null y contenga un id
     if (!medicamentoSeleccionado || !medicamentoSeleccionado.ID || !cantidad.trim() || !frecuencia.trim()) {
       Alert.alert('Por favor, complete todos los campos correctamente.');
       return;
     }
-  
+
     // Asegurarse de que pacienteId esté definido
     if (!pacienteID) {
       Alert.alert('Error: El ID del paciente no está disponible.');
       return;
     }
-  
+
     const dataParaEnviar = {
       pacienteID: pacienteID,
       medicamentoID: medicamentoSeleccionado.ID,
       dosisInicial: parseInt(cantidad, 10),
       frecuencia: parseInt(frecuencia, 10),
     };
-  
+
     console.log('Datos a guardar:', dataParaEnviar);
-  
+
     try {
       const response = await fetch('https://carinosaapi.onrender.com/horariomedicamentos/insert', {
         method: 'POST',
@@ -186,7 +186,7 @@ const MedicationReminderScreen = () => {
         },
         body: JSON.stringify(dataParaEnviar),
       });
-  
+
       if (response.ok) {
         Alert.alert('Horario guardado con éxito');
         setMedicamentoSeleccionado(null);
@@ -202,10 +202,10 @@ const MedicationReminderScreen = () => {
       Alert.alert('Error al conectar con el servidor. Por favor, intente más tarde.');
     }
   };
-  
-  
-  
-  
+
+
+
+
 
 
   return (
